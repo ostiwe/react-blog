@@ -1,0 +1,184 @@
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#root {
+  & > .ant {
+    &-layout {
+      min-height: 100vh;
+    }
+  }
+}
+
+.app {
+  &-header, &-footer {
+    background-color: #ffffff;
+    padding: 0 300px;
+    display: flex;
+    justify-content: space-between;
+    transition: padding .5s;
+
+    &-menu {
+      display: flex;
+      flex-direction: row-reverse;
+    }
+
+    &-auth {
+      &-dropdown {
+        display: none;
+      }
+
+    }
+  }
+
+  &-footer {
+    &-content {
+      padding: 20px;
+    }
+  }
+
+  &-logo {
+    width: fit-content;
+    margin-right: 30px;
+    float: left;
+    cursor: pointer;
+    transition: color .3s;
+
+
+    color: unset;
+
+    &:hover, &:focus {
+      color: #1890ff;
+    }
+  }
+
+  &-content {
+    padding: 50px 300px;
+    transition: padding .5s;
+  }
+
+
+  &-main {
+    &-sidebar {
+      position: relative;
+
+      & > form {
+        position: sticky;
+        top: 9px;
+      }
+    }
+
+    &-card {
+      margin-bottom: 20px;
+      animation: showCards .5s;
+
+      &-meta {
+        &__top {
+          font-size: 10pt;
+        }
+      }
+    }
+  }
+
+  &-auth {
+    &-form {
+      &-stepContent {
+        padding: 50px 0;
+      }
+    }
+  }
+}
+
+@keyframes showCards {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.load-more-button-place {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+}
+
+/* MEDIA */
+
+@media (max-width: 1340px) {
+  .app {
+    &-content, {
+      padding: 50px 200px;
+    }
+
+    &-header, &-footer {
+      padding: 0 200px;
+    }
+  }
+}
+
+@media (min-width: 1061px) and (max-width: 1230px) {
+  .app {
+    &-content {
+      padding: 50px 100px;
+    }
+
+    &-header, &-footer {
+      padding: 0 100px;
+    }
+  }
+}
+
+@media (max-width: 1060px) {
+  .app {
+    &-content, {
+      padding: 50px 50px;
+    }
+
+    &-header, &-footer {
+      padding: 0 50px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .app {
+    &-content {
+      padding: 50px 30px;
+    }
+
+    &-header, &-footer {
+      padding: 0 30px;
+    }
+  }
+}
+
+@media (max-width: 425px) {
+  .app {
+    &-content {
+      padding: 50px 20px;
+    }
+
+    &-header {
+      padding: 0 20px;
+
+      &-auth {
+        &-buttons {
+          display: none;
+        }
+
+        &-dropdown {
+          display: unset;
+        }
+      }
+    }
+  }
+}
+
