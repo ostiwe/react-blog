@@ -1,0 +1,125 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#root > .ant-layout {
+  min-height: 100vh;
+}
+
+.app-header, .app-footer {
+  background-color: #ffffff;
+  padding: 0 300px;
+  display: flex;
+  justify-content: space-between;
+  transition: padding 0.5s;
+}
+.app-header-menu, .app-footer-menu {
+  display: flex;
+  flex-direction: row-reverse;
+}
+.app-header-auth-dropdown, .app-footer-auth-dropdown {
+  display: none;
+}
+.app-footer-content {
+  padding: 20px;
+}
+.app-logo {
+  width: fit-content;
+  margin-right: 30px;
+  float: left;
+  cursor: pointer;
+  transition: color 0.3s;
+  color: unset;
+}
+.app-logo:hover, .app-logo:focus {
+  color: #1890ff;
+}
+.app-content {
+  padding: 50px 300px;
+  transition: padding 0.5s;
+}
+.app-main-sidebar {
+  position: relative;
+}
+.app-main-sidebar > form {
+  position: sticky;
+  top: 9px;
+}
+.app-main-card {
+  margin-bottom: 20px;
+  animation: showCards 0.5s;
+}
+.app-main-card-meta__top {
+  font-size: 10pt;
+}
+.app-auth-form-stepContent {
+  padding: 50px 0;
+}
+
+@keyframes showCards {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.load-more-button-place {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+}
+
+/* MEDIA */
+@media (max-width: 1340px) {
+  .app-content {
+    padding: 50px 200px;
+  }
+  .app-header, .app-footer {
+    padding: 0 200px;
+  }
+}
+@media (min-width: 1061px) and (max-width: 1230px) {
+  .app-content {
+    padding: 50px 100px;
+  }
+  .app-header, .app-footer {
+    padding: 0 100px;
+  }
+}
+@media (max-width: 1060px) {
+  .app-content {
+    padding: 50px 50px;
+  }
+  .app-header, .app-footer {
+    padding: 0 50px;
+  }
+}
+@media (max-width: 768px) {
+  .app-content {
+    padding: 50px 30px;
+  }
+  .app-header, .app-footer {
+    padding: 0 30px;
+  }
+}
+@media (max-width: 425px) {
+  .app-content {
+    padding: 50px 20px;
+  }
+  .app-header {
+    padding: 0 20px;
+  }
+  .app-header-auth-buttons {
+    display: none;
+  }
+  .app-header-auth-dropdown {
+    display: unset;
+  }
+}
+
+/*# sourceMappingURL=main.css.map */
