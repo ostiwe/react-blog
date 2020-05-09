@@ -17,16 +17,16 @@ export default function ({user_info}) {
     </Menu>;
 
     const authMenu = <Menu>
-        <Link to={'/register'}>
-            <Menu.Item key="register">
+        <Menu.Item key="register">
+            <Link to={'/register'}>
                 Регистрация
-            </Menu.Item>
-        </Link>
-        <Link to={'/login'}>
-            <Menu.Item key="login">
+            </Link>
+        </Menu.Item>
+        <Menu.Item key="login">
+            <Link to={'/login'}>
                 Вход
-            </Menu.Item>
-        </Link>
+            </Link>
+        </Menu.Item>
     </Menu>;
 
     const AuthDropdown = <Dropdown className={'app-header-auth-dropdown'} placement={'bottomLeft'} overlay={authMenu}>

@@ -4,8 +4,6 @@ import {
     BrowserRouter as Router,
     Switch,
     Route,
-    Link,
-    withRouter
 } from "react-router-dom";
 
 import {Button, Layout, Result} from "antd";
@@ -13,7 +11,7 @@ import {MainPage, CategoryPage, Login, Register} from "./pages";
 import {AppFooter, AppHeader} from "./components";
 
 
-const {Header, Content, Footer, Sider} = Layout;
+const {Content} = Layout;
 
 const appRoutes = [
     {

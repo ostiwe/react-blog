@@ -5,7 +5,7 @@ import * as serviceWorker from './serviceWorker';
 import {Provider} from "react-redux";
 import store from "./redux/store";
 
-import "antd/dist/antd.min.css";
+import "antd/dist/antd.css";
 import "./assets/styles/main.css";
 
 
