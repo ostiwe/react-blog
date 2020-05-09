@@ -54,6 +54,11 @@
 .app-main-card-meta__top {
   font-size: 10pt;
 }
+.app-auth-wrapper {
+  width: 60%;
+  margin: 0 auto;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
+}
 .app-auth-form-stepContent {
   padding: 50px 0;
 }
@@ -106,6 +111,9 @@
   .app-header, .app-footer {
     padding: 0 30px;
   }
+  .app-auth-wrapper {
+    width: 98%;
+  }
 }
 @media (max-width: 425px) {
   .app-content {
@@ -119,6 +127,9 @@
   }
   .app-header-auth-dropdown {
     display: unset;
+  }
+  .app-auth-wrapper {
+    width: 98%;
   }
 }
 

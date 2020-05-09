@@ -1,8 +1,11 @@
 import React from "react";
 import {connect} from "react-redux";
-import {Button, Card, Form, Input, Layout, Space, Steps, Tooltip} from "antd";
+import {Button, Card, Form, Input, InputNumber, Layout, Select, Space, Steps, Tooltip} from "antd";
 import {AppFooter, AppHeader} from "../../components";
 import QuestionCircleOutlined from "@ant-design/icons/lib/icons/QuestionCircleOutlined";
+import Reaptcha from "reaptcha";
+
+const _object = require('lodash/fp/object');
 
 const {Header, Content, Footer} = Layout;
 
@@ -13,6 +16,11 @@ class Register extends React.Component {
             step: 0,
             login: '',
             email: '',
+            first_name: '',
+            last_name: '',
+            age: 16,
+            sex: 'male',
+            form_data: {},
         };
 
 
@@ -23,8 +31,13 @@ class Register extends React.Component {
     nextStep = () => {
         this.formRef.current.validateFields()
             .then(done => {
+                let data = {},
+                    _data = this.state.form_data;
+                const currentFormData = this.formRef.current.getFieldsValue();
+                Object.keys(currentFormData).map(key => data[key] = currentFormData[key]);
+                const ob = _object.merge(_data, data);
                 const current = this.state.step + 1;
-                this.setState({step: current})
+                this.setState({step: current, form_data: ob})
             })
             .catch(s => {
             });
@@ -38,6 +51,21 @@ class Register extends React.Component {
     }
 
     formSubmit = () => {
+        this.formRef.current.validateFields()
+            .then(done => {
+                let data = {},
+                    _data = this.state.form_data;
+                const currentFormData = this.formRef.current.getFieldsValue();
+                Object.keys(currentFormData).map(key => data[key] = currentFormData[key]);
+                const ob = _object.merge(_data, data);
+                this.setState({form_data: ob})
+            })
+            .catch(s => {
+            });
+    }
+
+    ageEdit = (age) => {
+        this.setState({age: age});
     }
 
     formEdit = (e) => {
@@ -47,7 +75,7 @@ class Register extends React.Component {
 
 
     render() {
-        const {step, email, login} = this.state;
+        const {step, email, login, first_name, last_name, age, sex} = this.state;
         const registerSteps = [
             {
                 title: "Самое важное",
@@ -62,7 +90,7 @@ class Register extends React.Component {
                                         <QuestionCircleOutlined/>
                                     </Tooltip>
                                </span>}>
-                        <Input  onChange={this.formEdit} value={login}/>
+                        <Input onChange={this.formEdit} value={login}/>
                     </Form.Item>
                     <Form.Item hasFeedback name={'email'} rules={[{
                         required: true,
@@ -73,26 +101,46 @@ class Register extends React.Component {
                                label={'Укажите вашу почту'}>
                         <Input onChange={this.formEdit} value={email}/>
                     </Form.Item>
+
                 </>
             },
             {
                 title: "Немного о себе",
                 content: <>
-                    <Form.Item label={'Ваше имя'}>
+                    <Form.Item onChange={this.formEdit} value={first_name} name={'first_name'} label={'Ваше имя'}>
                         <Input/>
                     </Form.Item>
-                    <Form.Item label={'Ваша фамилия'}>
+                    <Form.Item onChange={this.formEdit} value={last_name} name={'last_name'} label={'Ваша фамилия'}>
                         <Input/>
                     </Form.Item>
-                    <Form.Item label={'Ваш возраст'}>
-                        <Input/>
-                    </Form.Item>
+                    <Space>
+                        <Form.Item onChange={this.formEdit} name={'sex'} label={'Ваш пол'}>
+                            <Select placeholder={'Выберите'} value={sex}>
+                                <Select.Option value={'male'}>Мужской</Select.Option>
+                                <Select.Option value={'female'}>Женский</Select.Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item name={'age'} required hasFeedback rules={[
+                            {required: true, message: 'Укажите реальный возраст'}
+                        ]} label={'Ваш возраст'}>
+                            <InputNumber value={age} onChange={this.ageEdit} min={16}/>
+                        </Form.Item>
+                    </Space>
                 </>
             },
             {
                 title: "Безопасность",
                 content: <>
-                    3asdlsjda
+                    <Form.Item name={'password'} required hasFeedback rules={[
+                        {required: true, message: "Вам нужен пароль"}
+                    ]} label={'Придумайте пароль'}>
+                        <Input.Password/>
+                    </Form.Item>
+                    <Form.Item required label={'Давайте проверим, что вы не робот'}>
+                        <Reaptcha sitekey={'6LdEz_QUAAAAAJ1K93ruihvsy0QtWTP98lWYBPW4'} onVerify={() => {
+                            console.log('ok')
+                        }}/>
+                    </Form.Item>
                 </>
             },
         ];
@@ -101,7 +149,7 @@ class Register extends React.Component {
             <Content className={'app-content'}>
                 <div className="app-auth-wrapper">
                     <Card>
-                        <Form ref={this.formRef} className="app-auth-form" layout={'vertical'}>
+                        <Form scrollToFirstError ref={this.formRef} className="app-auth-form" layout={'vertical'}>
                             <Steps size={'small'} current={step}>
                                 {registerSteps.map((item, key) => <Steps.Step
                                     key={key}

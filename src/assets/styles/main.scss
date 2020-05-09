@@ -84,6 +84,12 @@
   }
 
   &-auth {
+    &-wrapper {
+      width: 60%;
+      margin: 0 auto;
+      box-shadow: 0 0 20px rgba(0,0,0,.25);
+    }
+
     &-form {
       &-stepContent {
         padding: 50px 0;
@@ -157,6 +163,12 @@
     &-header, &-footer {
       padding: 0 30px;
     }
+
+    &-auth {
+      &-wrapper {
+        width: 98%;
+      }
+    }
   }
 }
 
@@ -177,6 +189,12 @@
         &-dropdown {
           display: unset;
         }
+      }
+    }
+
+    &-auth {
+      &-wrapper {
+        width: 98%;
       }
     }
   }
