@@ -1,8 +1,10 @@
 const initialState = {
     user_info: null,
-    // user_info: {login:'kedo'},
+    // user_info: {
+    //     login: 'ostiwe',
+    //     role: 'admin',
+    // },
     search_input: '',
-    test: 'test!',
 };
 
 
@@ -13,6 +15,14 @@ function mainReducer(state = initialState, action) {
             return {
                 ...state,
                 search_input: action.payload
+            }
+        case 'EMULATE_LOGIN':
+            return {
+                ...state,
+                user_info: {
+                    login: action.payload,
+                    role: 'admin'
+                }
             }
         default:
             return state;

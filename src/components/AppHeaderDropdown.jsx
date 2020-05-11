@@ -1,18 +1,24 @@
 import React from "react";
 import {Button, Dropdown, Menu, Space} from "antd";
-import {DownOutlined, UserOutlined, MenuOutlined} from "@ant-design/icons";
+import {DownOutlined, UserOutlined, MenuOutlined, DashboardOutlined, LogoutOutlined} from "@ant-design/icons";
 import {Link} from "react-router-dom";
 
 export default function ({user_info}) {
     const menu = user_info && <Menu>
         <Menu.Item key="1">
-            <UserOutlined/> Профиль
+            <Link to={'/profile'}>
+                <UserOutlined/> Профиль
+            </Link>
         </Menu.Item>
+        {user_info.role === 'admin' &&
         <Menu.Item key="2">
-            <UserOutlined/> 2nd menu item
+            <Link to={'/admin'}>
+                <DashboardOutlined/> Админка
+            </Link>
         </Menu.Item>
+        }
         <Menu.Item key="3">
-            <UserOutlined/> Выйти
+            <LogoutOutlined/> Выйти
         </Menu.Item>
     </Menu>;
 

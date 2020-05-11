@@ -9,6 +9,7 @@ import {
 import {Button, Layout, Result} from "antd";
 import {MainPage, CategoryPage, Login, Register} from "./pages";
 import {AppFooter, AppHeader} from "./components";
+import Admin from "./pages/Admin";
 
 
 const {Content} = Layout;
@@ -24,6 +25,10 @@ const appRoutes = [
         component: CategoryPage,
     },
 
+    {
+        path: '/admin',
+        component: Admin
+    },
 
     {
         path: '/login',

@@ -1,10 +1,9 @@
 import React from "react";
 import {connect} from "react-redux";
-import {BackTop, Button, Card, Col, Divider, Form, Input, Layout, Row, Tag, Typography} from "antd";
+import {BackTop, Layout} from "antd";
 import faker from 'faker';
-import {SearchOutlined} from '@ant-design/icons';
 import {changeSearchInput} from "../redux/actions/mainActions";
-import {Link, withRouter} from "react-router-dom";
+import {withRouter} from "react-router-dom";
 import {AppFooter, AppHeader, RenderColumnItems} from "../components";
 
 const {Content} = Layout;

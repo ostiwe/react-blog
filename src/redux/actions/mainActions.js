@@ -11,3 +11,10 @@ export function changeSearchInput(payload) {
         payload: payload
     }
 }
+
+export function emulateLogin(login) {
+    return {
+        type: 'EMULATE_LOGIN',
+        payload: login
+    }
+}
