@@ -7,9 +7,8 @@ import {
 } from "react-router-dom";
 
 import {Button, Layout, Result} from "antd";
-import {MainPage, CategoryPage, Login, Register} from "./pages";
+import {MainPage, CategoryPage, Login, Register, Admin} from "./pages";
 import {AppFooter, AppHeader} from "./components";
-import Admin from "./pages/Admin";
 
 
 const {Content} = Layout;

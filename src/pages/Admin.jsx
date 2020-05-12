@@ -3,6 +3,7 @@ import {connect} from "react-redux";
 import {Route, withRouter, Switch, Link} from "react-router-dom";
 import {Col, Layout, Menu, Row} from "antd";
 import {AppFooter, AppHeader} from "../components";
+import {Home} from "./AdminPages";
 
 
 const {Content} = Layout;
@@ -15,21 +16,26 @@ class Admin extends React.Component {
     }
 
     componentDidMount() {
-        const {user_info, history} = this.props;
+        const {user_info, history, location} = this.props;
+
 
         if (!user_info) {
             history.push('/');
         }
+        if (location.pathname === "/admin") {
+            history.push('/admin/posts');
+        }
+
     }
 
     render() {
-        const {match} = this.props;
+        const {match,location} = this.props;
         const adminPages = [
-            {
-                path: `${match.url}`,
-                component: () => <>Home Admin Page</>,
-                ex: true
-            },
+            // {
+            //     path: `${match.url}`,
+            //     component: Home,
+            //     ex: true
+            // },
             {
                 path: `${match.url}/posts`,
                 component: () => <>Posts Admin Page</>
@@ -45,25 +51,25 @@ class Admin extends React.Component {
 
                 <Row gutter={[20, 0]} className={'app-content-side'}>
                     <Col xl={5} lg={5} md={5} sm={10} xs={0}>
-                        <Menu defaultSelectedKeys={['home']}>
-                            <Menu.Item key={'home'}>
-                                <Link to={match.url}>
-                                    Главная
-                                </Link>
-                            </Menu.Item>
-                            <Menu.Item key={'posts'}>
+                        <Menu selectedKeys={[`${location.pathname}`]}>
+                            {/*<Menu.Item key={'home'}>*/}
+                            {/*    <Link to={match.url}>*/}
+                            {/*        Главная*/}
+                            {/*    </Link>*/}
+                            {/*</Menu.Item>*/}
+                            <Menu.Item key={`${match.url}/posts`}>
                                 <Link to={match.url + '/posts'}>
                                     Посты
                                 </Link>
                             </Menu.Item>
-                            <Menu.Item key={'users'}>
+                            <Menu.Item key={`${match.url}/users`}>
                                 <Link to={match.url + '/users'}>
                                     Пользователи
                                 </Link>
                             </Menu.Item>
                         </Menu>
                     </Col>
-                    <Col>
+                    <Col xl={19} lg={19} md={19} sm={14} xs={24}>
                         <Switch>
                             {adminPages.map(route => <Route path={route.path} exact={route.ex}
                                                             component={route.component}/>)}

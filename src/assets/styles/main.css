@@ -63,6 +63,21 @@
   padding: 50px 0;
 }
 
+.load-more-button-place {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+}
+
+.stat-card {
+  padding: 10px;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.25);
+  width: fit-content;
+  margin: 10px;
+}
+
 @keyframes showCards {
   from {
     transform: scale(0);
@@ -73,12 +88,6 @@
     opacity: 1;
   }
 }
-.load-more-button-place {
-  display: flex;
-  align-content: center;
-  justify-content: center;
-}
-
 /* MEDIA */
 @media (max-width: 1340px) {
   .app-content {
