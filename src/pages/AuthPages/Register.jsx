@@ -4,6 +4,7 @@ import {Button, Card, Form, Input, InputNumber, Layout, Select, Space, Steps, To
 import {AppFooter, AppHeader} from "../../components";
 import QuestionCircleOutlined from "@ant-design/icons/lib/icons/QuestionCircleOutlined";
 import Reaptcha from "reaptcha";
+import BlogApi from "../../assets/js/BlogApi";
 
 const _object = require('lodash/fp/object');
 
@@ -21,10 +22,12 @@ class Register extends React.Component {
             age: 16,
             sex: 'male',
             form_data: {},
+            robotCheck: false,
         };
 
 
         this.formRef = React.createRef();
+        this.blogApi = new BlogApi('https://api.blog.co');
     }
 
 
@@ -47,7 +50,7 @@ class Register extends React.Component {
 
     prevStep = () => {
         const current = this.state.step - 1;
-        this.setState({step: current});
+        this.setState({step: current, robotCheck: false});
     }
 
     formSubmit = () => {
@@ -59,6 +62,9 @@ class Register extends React.Component {
                 Object.keys(currentFormData).map(key => data[key] = currentFormData[key]);
                 const ob = _object.merge(_data, data);
                 this.setState({form_data: ob})
+                this.blogApi.register(ob).then(value => {
+                    console.log(value)
+                });
             })
             .catch(s => {
             });
@@ -75,7 +81,7 @@ class Register extends React.Component {
 
 
     render() {
-        const {step, email, login, first_name, last_name, age, sex} = this.state;
+        const {step, email, login, first_name, last_name, age, sex, robotCheck} = this.state;
         const registerSteps = [
             {
                 title: "Самое важное",
@@ -116,8 +122,8 @@ class Register extends React.Component {
                     <Space>
                         <Form.Item onChange={this.formEdit} name={'sex'} label={'Ваш пол'}>
                             <Select placeholder={'Выберите'} value={sex}>
-                                <Select.Option value={'male'}>Мужской</Select.Option>
-                                <Select.Option value={'female'}>Женский</Select.Option>
+                                <Select.Option value={0}>Мужской</Select.Option>
+                                <Select.Option value={1}>Женский</Select.Option>
                             </Select>
                         </Form.Item>
                         <Form.Item name={'age'} required hasFeedback rules={[
@@ -137,8 +143,10 @@ class Register extends React.Component {
                         <Input.Password/>
                     </Form.Item>
                     <Form.Item required label={'Давайте проверим, что вы не робот'}>
-                        <Reaptcha sitekey={'6LdEz_QUAAAAAJ1K93ruihvsy0QtWTP98lWYBPW4'} onVerify={() => {
-                            console.log('ok')
+                        <Reaptcha sitekey={'6LdEz_QUAAAAAJ1K93ruihvsy0QtWTP98lWYBPW4'} onExpire={() => {
+                            this.setState({robotCheck: false})
+                        }} onVerify={() => {
+                            this.setState({robotCheck: true})
                         }}/>
                     </Form.Item>
                 </>
@@ -165,7 +173,7 @@ class Register extends React.Component {
                                         </Button>
                                     )}
                                     {step === registerSteps.length - 1 && (
-                                        <Button type="primary" onClick={this.formSubmit}>
+                                        <Button type="primary" disabled={!robotCheck} onClick={this.formSubmit}>
                                             Готово
                                         </Button>
                                     )}

@@ -3,8 +3,8 @@ import {Button, Card, Form, Input, Layout} from "antd";
 import {AppFooter, AppHeader} from "../../components";
 import Reaptcha from "reaptcha";
 import {connect} from "react-redux";
-import {emulateLogin} from "../../redux/actions/mainActions";
 import {withRouter} from "react-router-dom";
+import BlogApi from "../../assets/js/BlogApi";
 
 const {Content} = Layout;
 
@@ -15,11 +15,18 @@ class Login extends React.Component {
             robotCheck: false,
         };
         this.formRef = React.createRef();
+        this.blogApi = new BlogApi('https://api.blog.co');
     }
 
     login = () => {
-        this.props.dispatch(emulateLogin(this.formRef.current.getFieldValue('login')))
-        this.props.history.push('/')
+        const fieldData = this.formRef.current.getFieldsValue()
+        this.blogApi.login(fieldData).then(data => {
+            if (data.status === 'success') {
+
+            }
+        })
+        // this.props.dispatch(emulateLogin(this.formRef.current.getFieldValue('login')))
+        // this.props.history.push('/')
     }
 
     render() {
@@ -41,7 +48,7 @@ class Login extends React.Component {
                                 <Form.Item label={'Проверим, что вы не робот'}>
                                     <Reaptcha sitekey={'6LdEz_QUAAAAAJ1K93ruihvsy0QtWTP98lWYBPW4'} onVerify={() => {
                                         this.setState({robotCheck: true})
-                                    }}/>
+                                    }} onExpire={() => this.setState({robotCheck: false})}/>
                                 </Form.Item>
                                 <Form.Item>
                                     <Button
