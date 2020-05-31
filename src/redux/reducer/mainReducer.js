@@ -16,6 +16,11 @@ function mainReducer(state = initialState, action) {
                 ...state,
                 search_input: action.payload
             }
+        case 'SET_USER_INFO':
+            return {
+                ...state,
+                user_info: action.payload
+            }
         case 'EMULATE_LOGIN':
             return {
                 ...state,

@@ -6,7 +6,7 @@ import {connect} from "react-redux";
 
 function RenderColumnItems({
                                items, search_input, categories, loading,
-                               loadData, searchOnPage
+                               loadData, searchOnPage, postsEnd
                            }) {
 
     const sidebarForm = (
@@ -30,21 +30,24 @@ function RenderColumnItems({
             <Col xl={19} lg={19} md={17} sm={48} xs={48} style={{width: '100%'}}>
                 {items.map((item, index) => {
                     return <Card className={'app-main-card'} title={<Space className={'app-main-card-meta__top'}>
-                        <Avatar size={"small"} shape={"circle"}>{item.creator[0]}</Avatar>
-                        <span>Пост от {item.creator}</span>
+                        <Avatar size={"small"} shape={"circle"}>{item.author.login[0]}</Avatar>
+                        <span>Пост от {item.author.login}</span>
                     </Space>} key={index} extra={<Space className={'app-main-card-meta__top'}>
                         11.05.2020
                     </Space>}>
-                        <Typography.Title level={3}>{item.title}</Typography.Title>
-                        {item.small_text}
+                        <Typography.Title level={3}>{item.post.title}</Typography.Title>
+                        {item.post.text}
                         <Divider/>
-                        <Card.Meta description={<div>
-                            <Tag>{item.category}</Tag>
-                        </div>}/>
+                        {/*<Card.Meta description={<div>*/}
+                        {/*    <Tag>{item.category}</Tag>*/}
+                        {/*</div>}/>*/}
                     </Card>
                 })}
                 <div className={'load-more-button-place'}>
-                    <Button loading={loading} onClick={loadData}>Загрузить еще</Button>
+                    {!postsEnd && <Button loading={loading} onClick={loadData}>Загрузить еще</Button>}
+                    {postsEnd && (
+                        <Divider>Записей больше нет</Divider>
+                    )}
                 </div>
             </Col>
 

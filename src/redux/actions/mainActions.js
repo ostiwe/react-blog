@@ -18,3 +18,10 @@ export function emulateLogin(login) {
         payload: login
     }
 }
+
+export function setUserInfo(userInfo) {
+    return {
+        type: 'SET_USER_INFO',
+        payload: userInfo
+    }
+}

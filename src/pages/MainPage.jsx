@@ -5,6 +5,7 @@ import faker from 'faker';
 import {changeSearchInput} from "../redux/actions/mainActions";
 import {withRouter} from "react-router-dom";
 import {AppFooter, AppHeader, RenderColumnItems} from "../components";
+import BlogApi from "../assets/js/BlogApi";
 
 const {Content} = Layout;
 
@@ -14,11 +15,13 @@ class MainPage extends React.Component {
         this.state = {
             data: [],
             categories: [],
-
+            page: 1,
             search: false,
             filteredData: [],
             loading: false,
+            postsEnd: false,
         }
+        this.apiBlog = new BlogApi("https://api.blog.co");
     }
 
     componentDidMount() {
@@ -33,7 +36,7 @@ class MainPage extends React.Component {
             });
         }
         this.setState({categories: cat})
-        this.generateData()
+        this.getPosts()
     }
 
     generateData = () => {
@@ -54,6 +57,20 @@ class MainPage extends React.Component {
             this.setState({data: data, loading: false})
         }, 2000)
     }
+    getPosts = () => {
+        this.setState({loading: true})
+        const {page} = this.state;
+
+        this.apiBlog.getPosts(page).then(items => {
+            if (items.count === 0) {
+                this.setState({postsEnd: true})
+                return;
+            }
+            this.setState({data: items.items, page: page + 1})
+        });
+
+        setTimeout(() => this.setState({loading: false}), 650)
+    }
 
     searchOnPage = (e) => {
         let search = e.target.value;
@@ -68,7 +85,7 @@ class MainPage extends React.Component {
 
     render() {
         const {user_info, search_input} = this.props;
-        const {data, search, filteredData, loading, categories} = this.state;
+        const {data, search, filteredData, loading, categories, postsEnd} = this.state;
 
         const items = search ? filteredData : data;
 
@@ -78,8 +95,8 @@ class MainPage extends React.Component {
 
             <Content className={'app-content'}>
                 <BackTop/>
-                <RenderColumnItems loading={loading} items={items} categories={categories}
-                                   loadData={this.generateData} searchOnPage={this.searchOnPage}/>
+                <RenderColumnItems postsEnd={postsEnd} loading={loading} items={items} categories={categories}
+                                   loadData={this.getPosts} searchOnPage={this.searchOnPage}/>
             </Content>
             <AppFooter/>
         </Layout>

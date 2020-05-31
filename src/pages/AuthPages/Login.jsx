@@ -1,10 +1,11 @@
 import React from "react";
-import {Button, Card, Form, Input, Layout} from "antd";
+import {Button, Card, Form, Input, Layout, notification} from "antd";
 import {AppFooter, AppHeader} from "../../components";
 import Reaptcha from "reaptcha";
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
 import BlogApi from "../../assets/js/BlogApi";
+import {setUserInfo} from "../../redux/actions/mainActions";
 
 const {Content} = Layout;
 
@@ -22,11 +23,18 @@ class Login extends React.Component {
         const fieldData = this.formRef.current.getFieldsValue()
         this.blogApi.login(fieldData).then(data => {
             if (data.status === 'success') {
+                this.props.dispatch(setUserInfo(data.data.user_info));
+                this.props.history.push('/')
+                return;
+            }
+            if (data.status === 'auth_error') {
+                notification.error({
+                    message: data.message
+                });
 
             }
-        })
+        }).catch(null);
         // this.props.dispatch(emulateLogin(this.formRef.current.getFieldValue('login')))
-        // this.props.history.push('/')
     }
 
     render() {

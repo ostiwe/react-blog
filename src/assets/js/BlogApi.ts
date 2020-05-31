@@ -1,4 +1,5 @@
-// @ts-ignore
+import {notification} from "antd";
+
 class BlogApi {
     private readonly host: string;
     private accessToken: string | undefined;
@@ -22,6 +23,11 @@ class BlogApi {
             formData, [['Content-type', 'application/json']])
     }
 
+    getPosts(page: number) {
+        return this.sendRequest('/posts', 'POST',
+            {page: page}, [['Content-type', 'application/json']])
+    }
+
     sendRequest(url: string, method: string, data: object, headers?: [[any, any]]) {
         return new Promise((resolve, reject) => {
             let xr = new XMLHttpRequest();
@@ -31,6 +37,10 @@ class BlogApi {
                 resolve(JSON.parse(xr.response))
             }
             xr.onerror = function () {
+                notification.error({
+                    message: "Ошибка сети",
+                    description: "В данный момент невозможно выполнить запрашиваемую операцию, повторите попытку позже."
+                });
                 reject(xr.response)
             }
             if (headers?.length) {

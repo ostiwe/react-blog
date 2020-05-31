@@ -1,10 +1,11 @@
 import React from "react";
 import {connect} from "react-redux";
-import {Button, Card, Form, Input, InputNumber, Layout, Select, Space, Steps, Tooltip} from "antd";
+import {Button, Card, Form, Input, InputNumber, Layout, notification, Select, Space, Steps, Tooltip} from "antd";
 import {AppFooter, AppHeader} from "../../components";
 import QuestionCircleOutlined from "@ant-design/icons/lib/icons/QuestionCircleOutlined";
 import Reaptcha from "reaptcha";
 import BlogApi from "../../assets/js/BlogApi";
+import {withRouter} from "react-router-dom";
 
 const _object = require('lodash/fp/object');
 
@@ -20,7 +21,7 @@ class Register extends React.Component {
             first_name: '',
             last_name: '',
             age: 16,
-            sex: 'male',
+            sex: 0,
             form_data: {},
             robotCheck: false,
         };
@@ -61,9 +62,18 @@ class Register extends React.Component {
                 const currentFormData = this.formRef.current.getFieldsValue();
                 Object.keys(currentFormData).map(key => data[key] = currentFormData[key]);
                 const ob = _object.merge(_data, data);
+                Object.keys(ob).map(key => ob[key] === undefined && (ob[key] = null))
+                ob.sex === null && (ob.sex = this.state.sex);
                 this.setState({form_data: ob})
                 this.blogApi.register(ob).then(value => {
-                    console.log(value)
+                    if (value.status === 'success') {
+                        notification.success({
+                            message: 'Успешная регистрация',
+                            description: 'Теперь для завершения регистрации выполните вход'
+                        })
+                        this.props.history.push('/login')
+                        return;
+                    }
                 });
             })
             .catch(s => {
@@ -120,8 +130,8 @@ class Register extends React.Component {
                         <Input/>
                     </Form.Item>
                     <Space>
-                        <Form.Item onChange={this.formEdit} name={'sex'} label={'Ваш пол'}>
-                            <Select placeholder={'Выберите'} value={sex}>
+                        <Form.Item required onChange={this.formEdit} name={'sex'} label={'Ваш пол'}>
+                            <Select defaultValue={sex} value={sex} placeholder={'Выберите'}>
                                 <Select.Option value={0}>Мужской</Select.Option>
                                 <Select.Option value={1}>Женский</Select.Option>
                             </Select>
@@ -198,4 +208,4 @@ function stateToProps(state) {
     return state
 }
 
-export default connect(stateToProps)(Register);
+export default withRouter(connect(stateToProps)(Register));
