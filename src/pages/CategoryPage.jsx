@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Card, Col, Divider, Layout, Row, Tag, Typography} from "antd";
+import {Layout} from "antd";
 import {AppFooter, AppHeader} from "../components";
 import {withRouter} from "react-router-dom";
 import {connect} from "react-redux";

@@ -28,6 +28,11 @@ class BlogApi {
             {page: page}, [['Content-type', 'application/json']])
     }
 
+    getUserInfo() {
+        return this.sendRequest('/auth/info', 'POST',
+            {access_token: this.accessToken}, [['Content-type', 'application/json']])
+    }
+
     sendRequest(url: string, method: string, data: object, headers?: [[any, any]]) {
         return new Promise((resolve, reject) => {
             let xr = new XMLHttpRequest();

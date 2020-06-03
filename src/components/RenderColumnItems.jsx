@@ -4,6 +4,8 @@ import {SearchOutlined} from "@ant-design/icons";
 import {Link} from "react-router-dom";
 import {connect} from "react-redux";
 
+import moment from "moment/min/moment-with-locales.min";
+
 function RenderColumnItems({
                                items, search_input, categories, loading,
                                loadData, searchOnPage, postsEnd
@@ -33,7 +35,7 @@ function RenderColumnItems({
                         <Avatar size={"small"} shape={"circle"}>{item.author.login[0]}</Avatar>
                         <span>Пост от {item.author.login}</span>
                     </Space>} key={index} extra={<Space className={'app-main-card-meta__top'}>
-                        11.05.2020
+                        {moment(parseInt(item.post.published) * 1000).locale('ru-RU').calendar()}
                     </Space>}>
                         <Typography.Title level={3}>{item.post.title}</Typography.Title>
                         {item.post.text}

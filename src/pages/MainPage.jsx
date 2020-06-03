@@ -5,7 +5,7 @@ import faker from 'faker';
 import {changeSearchInput} from "../redux/actions/mainActions";
 import {withRouter} from "react-router-dom";
 import {AppFooter, AppHeader, RenderColumnItems} from "../components";
-import BlogApi from "../assets/js/BlogApi";
+import apiBlog from "../assets/js/BlogApiSettings";
 
 const {Content} = Layout;
 
@@ -21,7 +21,7 @@ class MainPage extends React.Component {
             loading: false,
             postsEnd: false,
         }
-        this.apiBlog = new BlogApi("https://api.blog.co");
+        this.apiBlog = apiBlog;
     }
 
     componentDidMount() {
@@ -84,7 +84,6 @@ class MainPage extends React.Component {
     }
 
     render() {
-        const {user_info, search_input} = this.props;
         const {data, search, filteredData, loading, categories, postsEnd} = this.state;
 
         const items = search ? filteredData : data;

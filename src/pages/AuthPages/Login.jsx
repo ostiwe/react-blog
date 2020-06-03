@@ -4,8 +4,8 @@ import {AppFooter, AppHeader} from "../../components";
 import Reaptcha from "reaptcha";
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
-import BlogApi from "../../assets/js/BlogApi";
 import {setUserInfo} from "../../redux/actions/mainActions";
+import apiBlog from "../../assets/js/BlogApiSettings";
 
 const {Content} = Layout;
 
@@ -16,7 +16,7 @@ class Login extends React.Component {
             robotCheck: false,
         };
         this.formRef = React.createRef();
-        this.blogApi = new BlogApi('https://api.blog.co');
+        this.blogApi = apiBlog;
     }
 
     login = () => {
@@ -24,6 +24,7 @@ class Login extends React.Component {
         this.blogApi.login(fieldData).then(data => {
             if (data.status === 'success') {
                 this.props.dispatch(setUserInfo(data.data.user_info));
+                localStorage.setItem('access_token', data.data.user_info.access_token)
                 this.props.history.push('/')
                 return;
             }

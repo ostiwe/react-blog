@@ -7,11 +7,14 @@ import store from "./redux/store";
 
 import "antd/dist/antd.css";
 import "./assets/styles/main.css";
+import {BrowserRouter as Router,} from "react-router-dom";
 
 
 ReactDOM.render(
     <Provider store={store}>
-        <AppRouter/>
+        <Router>
+            <AppRouter/>
+        </Router>
     </Provider>,
     document.getElementById('root')
 );

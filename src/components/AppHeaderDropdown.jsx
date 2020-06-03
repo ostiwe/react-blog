@@ -10,12 +10,12 @@ export default function ({user_info}) {
                 <UserOutlined/> Профиль
             </Link>
         </Menu.Item>
-        {user_info.role === 'admin' &&
-        <Menu.Item key="2">
-            <Link to={'/admin'}>
-                <DashboardOutlined/> Админка
-            </Link>
-        </Menu.Item>
+        {user_info.mask ? (user_info.mask & 16) &&
+            <Menu.Item key="2">
+                <Link to={'/admin'}>
+                    <DashboardOutlined/> Админка
+                </Link>
+            </Menu.Item> : null
         }
         <Menu.Item key="3">
             <LogoutOutlined/> Выйти

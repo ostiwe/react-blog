@@ -4,12 +4,12 @@ import {Button, Card, Form, Input, InputNumber, Layout, notification, Select, Sp
 import {AppFooter, AppHeader} from "../../components";
 import QuestionCircleOutlined from "@ant-design/icons/lib/icons/QuestionCircleOutlined";
 import Reaptcha from "reaptcha";
-import BlogApi from "../../assets/js/BlogApi";
 import {withRouter} from "react-router-dom";
+import apiBlog from "../../assets/js/BlogApiSettings";
 
 const _object = require('lodash/fp/object');
 
-const {Header, Content, Footer} = Layout;
+const {Content} = Layout;
 
 class Register extends React.Component {
     constructor(props) {
@@ -28,13 +28,13 @@ class Register extends React.Component {
 
 
         this.formRef = React.createRef();
-        this.blogApi = new BlogApi('https://api.blog.co');
+        this.apiBlog = apiBlog;
     }
 
 
     nextStep = () => {
         this.formRef.current.validateFields()
-            .then(done => {
+            .then(() => {
                 let data = {},
                     _data = this.state.form_data;
                 const currentFormData = this.formRef.current.getFieldsValue();
@@ -43,7 +43,7 @@ class Register extends React.Component {
                 const current = this.state.step + 1;
                 this.setState({step: current, form_data: ob})
             })
-            .catch(s => {
+            .catch(() => {
             });
 
 
@@ -56,7 +56,7 @@ class Register extends React.Component {
 
     formSubmit = () => {
         this.formRef.current.validateFields()
-            .then(done => {
+            .then(() => {
                 let data = {},
                     _data = this.state.form_data;
                 const currentFormData = this.formRef.current.getFieldsValue();
@@ -65,18 +65,17 @@ class Register extends React.Component {
                 Object.keys(ob).map(key => ob[key] === undefined && (ob[key] = null))
                 ob.sex === null && (ob.sex = this.state.sex);
                 this.setState({form_data: ob})
-                this.blogApi.register(ob).then(value => {
+                this.apiBlog.register(ob).then(value => {
                     if (value.status === 'success') {
                         notification.success({
                             message: 'Успешная регистрация',
                             description: 'Теперь для завершения регистрации выполните вход'
                         })
                         this.props.history.push('/login')
-                        return;
                     }
                 });
             })
-            .catch(s => {
+            .catch(() => {
             });
     }
 
@@ -99,7 +98,7 @@ class Register extends React.Component {
                     <Form.Item hasFeedback rules={[{
                         required: true,
                         message: 'Неверный формат логина',
-                        pattern: new RegExp('^[a-zA-Z][a-zA-Z0-9-_\\.]{1,20}$')
+                        pattern: new RegExp('^[a-zA-Z][a-zA-Z0-9-_.]{1,20}$')
                     }]} required name={'login'}
                                label={<span>Придумайте логин&nbsp;
                                    <Tooltip title="Придуманный вами логин будет использоваться во всех разделах блога">

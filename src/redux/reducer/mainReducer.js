@@ -2,7 +2,8 @@ const initialState = {
     user_info: null,
     // user_info: {
     //     login: 'ostiwe',
-    //     role: 'admin',
+    //     uid: 'adkoiau-asda313-dssds3-32e',
+    //     access_token:'skmsadsasd',
     // },
     search_input: '',
 };
