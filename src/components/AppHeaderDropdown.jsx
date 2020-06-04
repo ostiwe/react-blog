@@ -1,7 +1,17 @@
 import React from "react";
-import {Button, Dropdown, Menu, Space} from "antd";
-import {DownOutlined, UserOutlined, MenuOutlined, DashboardOutlined, LogoutOutlined} from "@ant-design/icons";
+import {Button, Dropdown, Menu, Modal, Result, Space} from "antd";
+import {DashboardOutlined, DownOutlined, LogoutOutlined, MenuOutlined, UserOutlined} from "@ant-design/icons";
 import {Link} from "react-router-dom";
+import InfoCircleOutlined from "@ant-design/icons/lib/icons/InfoCircleOutlined";
+
+function showInfoModal() {
+    Modal.info({
+        title: "Информация",
+        maskClosable: true,
+        content: <div>Для работы, необходимо запустить API сервер на локальной машине. Репозиторий с API <a
+            href='https://vk.cc/av6Ww7' target='_blank'>https://vk.cc/av6Ww7</a></div>
+    });
+}
 
 export default function ({user_info}) {
     const menu = user_info && <Menu>
@@ -47,6 +57,7 @@ export default function ({user_info}) {
         </Dropdown> : <div>
             {AuthDropdown}
             <Space className={'app-header-auth-buttons'}>
+                <Button onClick={showInfoModal}><InfoCircleOutlined/></Button>
                 <Link to={'/register'}>
                     <Button>Регистрация</Button>
                 </Link>
