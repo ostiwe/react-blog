@@ -3,6 +3,7 @@ import {withRouter} from "react-router-dom";
 import {connect} from "react-redux";
 
 import {Layout, PageHeader, Tabs} from 'antd';
+import {AllPosts} from "./PostsSubPage";
 
 const {Content} = Layout;
 const {TabPane} = Tabs;
@@ -19,12 +20,16 @@ class Posts extends React.Component {
     changeHeaderTab = (e) => {
         const {history} = this.props;
         history.push(`/admin/posts/${e}`)
+        this.setState({activeTab: e})
     }
 
     componentDidMount() {
-        // const {history, location} = this.props;
-        // console.log(history);
-        // console.log(location);
+        const {match} = this.props;
+
+        if (match.params.section) {
+            this.setState({activeTab: match.params.section})
+        }
+
     }
 
     render() {
@@ -32,12 +37,14 @@ class Posts extends React.Component {
         return <Layout>
             <Content>
                 <PageHeader title={'Записи в блоге'} ghost={false}
-                            footer={<Tabs defaultActiveKey={activeTab} onChange={this.changeHeaderTab}>
+                            footer={<Tabs activeKey={activeTab} defaultActiveKey={activeTab}
+                                          onChange={this.changeHeaderTab}>
                                 <TabPane key={'all'} tab={'Все записи'}/>
                                 <TabPane key={'filter'} tab={'Фильтр'}/>
                                 <TabPane key={'new'} tab={'Новая запись'}/>
-                            </Tabs>}
-                />
+                            </Tabs>}/>
+                {activeTab === 'all' && <AllPosts/>}
+                {activeTab === 'filter' && "SDL"}
             </Content>
         </Layout>
     }

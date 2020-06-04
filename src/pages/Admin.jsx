@@ -16,7 +16,7 @@ class Admin extends React.Component {
         this.state = {
             user_info: {},
             loading: true,
-            selectedMenu: '/admin/posts'
+            selectedMenu: '/admin/posts',
         };
         this.apiBlog = apiBlog;
     }
@@ -28,18 +28,21 @@ class Admin extends React.Component {
             this.apiBlog
                 .setAccessToken(token)
                 .getUserInfo().then(info => {
-                if (!(parseInt(info.user_info.mask) & 16)) {
-                    history.push('/');
+                if (info.status === 'success') {
+                    if (!(parseInt(info.user_info.mask) & 16)) {
+                        history.push('/');
+                        return;
+                    }
+                    let userInfo = {
+                        login: info.user_info.login,
+                        uid: info.user_info.uid,
+                        mask: info.user_info.mask,
+                        access_token: info.access_token.access_token
+                    }
+                    this.setState({userInfo: userInfo, loading: false});
                     return;
                 }
-                let userInfo = {
-                    login: info.user_info.login,
-                    uid: info.user_info.uid,
-                    mask: info.user_info.mask,
-                    access_token: info.access_token.access_token
-                }
-                this.setState({userInfo: userInfo, loading: false});
-
+                history.push('/');
             });
             return
         }
@@ -48,20 +51,21 @@ class Admin extends React.Component {
     }
 
     componentDidMount() {
-        const {history, match} = this.props;
-        // console.warn(history);
-        // console.warn(location);
-        // console.warn(match);
-
-        // let url = location.pathname;
-
-        // console.log(url.split('/'));
+        const {history, match, location} = this.props;
 
         if (!match.params.section) {
-            history.push('/admin/posts');
+            history.push('/admin/posts/all');
         }
 
+        let url = location.pathname.split('/');
 
+        if (url.length > 3) {
+            let arr = url.splice(0, url.length - 1)
+            url = arr.join('/')
+        } else url = url.join('/');
+
+
+        this.setState({selectedMenu: url});
 
         this.getUserData();
 
@@ -81,7 +85,7 @@ class Admin extends React.Component {
             //     ex: true
             // },
             {
-                path: ['/admin/posts', '/admin/posts/:section'],
+                path: '/admin/posts/:section',
                 component: Posts
             },
             {
