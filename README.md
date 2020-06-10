@@ -1,3 +1,5 @@
+![Build](https://github.com/ostiwe/react-blog/workflows/Build/badge.svg?branch=master&event=push)
+
 # Сборка и запуск
 
 ## Запуск
