@@ -4,7 +4,9 @@ import apiBlog from "../../../assets/js/BlogApiSettings";
 import {Avatar, Button, Divider, List, notification, Popover, Space, Tooltip} from "antd";
 import MoreOutlined from "@ant-design/icons/lib/icons/MoreOutlined";
 
-import moment from "moment/min/moment-with-locales.min";
+import moment from 'moment';
+import 'moment/min/locales';
+
 import {UserPopover} from "../../../components";
 
 class AllPosts extends Component {
