@@ -11,7 +11,6 @@ function RenderColumnItems({
                                items, search_input, categories, loading,
                                loadData, searchOnPage, postsEnd
                            }) {
-
     const sidebarForm = (
         <Form>
             <Input value={search_input} onChange={searchOnPage} suffix={<SearchOutlined/>}
@@ -33,13 +32,13 @@ function RenderColumnItems({
             <Col xl={19} lg={19} md={17} sm={48} xs={48} style={{width: '100%'}}>
                 {items.map((item, index) => {
                     return <Card className={'app-main-card'} title={<Space className={'app-main-card-meta__top'}>
-                        <Avatar size={"small"} shape={"circle"}>{item.author.login[0]}</Avatar>
-                        <span>Пост от {item.author.login}</span>
-                    </Space>} key={index} extra={<Space className={'app-main-card-meta__top'}>
-                        {moment(parseInt(item.post.published) * 1000).locale('ru-RU').calendar()}
+                        <Avatar size={"small"} shape={"circle"}>{item.creator.login[0]}</Avatar>
+                        <span>Пост от {item.creator.login}</span>
+                    </Space>} key={item.id} extra={<Space className={'app-main-card-meta__top'}>
+                        {moment(parseInt(item.published) * 1000).locale('ru-RU').calendar()}
                     </Space>}>
-                        <Typography.Title level={3}>{item.post.title}</Typography.Title>
-                        {item.post.text}
+                        <Typography.Title level={3}>{item.title}</Typography.Title>
+                        {item.content}
                         <Divider/>
                         {/*<Card.Meta description={<div>*/}
                         {/*    <Tag>{item.category}</Tag>*/}

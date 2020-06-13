@@ -62,11 +62,12 @@ class Register extends React.Component {
                 const currentFormData = this.formRef.current.getFieldsValue();
                 Object.keys(currentFormData).map(key => data[key] = currentFormData[key]);
                 const ob = _object.merge(_data, data);
+                console.log(ob);
                 Object.keys(ob).map(key => ob[key] === undefined && (ob[key] = null))
                 ob.sex === null && (ob.sex = this.state.sex);
-                this.setState({form_data: ob})
+                this.setState({form_data: ob});
                 this.apiBlog.register(ob).then(value => {
-                    if (value.status === 'success') {
+                    if (value.success) {
                         notification.success({
                             message: 'Успешная регистрация',
                             description: 'Теперь для завершения регистрации выполните вход'

@@ -22,7 +22,7 @@ const appRoutes = [
     },
 
     {
-        path: ['/admin/:section','/admin'],
+        path: ['/admin/:section', '/admin'],
         component: Admin
     },
 
@@ -58,19 +58,17 @@ class AppRouter extends React.Component {
         if (user_info === null && has_access_token) {
             this.apiBlog.setAccessToken(access_token);
             this.apiBlog.getUserInfo().then(response => {
-                if (response.status === 'bad_request' && !is_auth_page) {
+                if (!response.success && !is_auth_page) {
                     notification.warn({
                         key: 'auth_expired',
                         message: "Ваша сессия устарела, необходимо повторить вход",
                         btn: <Button onClick={goAuth}>Повторить вход</Button>
                     })
                 }
-                if (response.status === 'success') {
+                if (response.success) {
                     let user_info = {
-                        login: response.user_info.login,
-                        uid: response.user_info.uid,
-                        mask: response.user_info.mask,
-                        access_token: response.access_token.access_token
+                        ...response.data.user_info,
+                        access_token: response.data.access_token.value
                     };
                     dispatch(setUserInfo(user_info));
                     this.forceUpdate();

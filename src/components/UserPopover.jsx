@@ -1,5 +1,5 @@
 import React from 'react';
-import {Avatar, Card, List, Popover, Space} from "antd";
+import {Avatar, List, Popover, Space} from "antd";
 
 function UserPopover(props) {
     const {user} = props;

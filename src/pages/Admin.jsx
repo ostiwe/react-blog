@@ -28,16 +28,14 @@ class Admin extends React.Component {
             this.apiBlog
                 .setAccessToken(token)
                 .getUserInfo().then(info => {
-                if (info.status === 'success') {
-                    if (!(parseInt(info.user_info.mask) & 16)) {
+                if (info.success) {
+                    if (!(parseInt(info.data.user_info.mask) & 16)) {
                         history.push('/');
                         return;
                     }
                     let userInfo = {
-                        login: info.user_info.login,
-                        uid: info.user_info.uid,
-                        mask: info.user_info.mask,
-                        access_token: info.access_token.access_token
+                        ...info.data.user_info,
+                        access_token: info.data.access_token.access_token
                     }
                     this.setState({userInfo: userInfo, loading: false});
                     return;
@@ -64,7 +62,7 @@ class Admin extends React.Component {
             url = arr.join('/')
         } else url = url.join('/');
 
-
+        console.log(url);
         this.setState({selectedMenu: url});
 
         this.getUserData();
@@ -85,7 +83,7 @@ class Admin extends React.Component {
             //     ex: true
             // },
             {
-                path: '/admin/posts/:section',
+                path: ['/admin/posts','/admin/posts/:section'],
                 component: Posts
             },
             {

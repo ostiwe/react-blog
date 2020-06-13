@@ -27,56 +27,37 @@ class MainPage extends React.Component {
     componentDidMount() {
         let cat = [];
         for (let i = 1; i < 6; i++) {
-
             cat.push({
                 id: i,
                 title: faker.lorem.slug(1),
-
-
             });
         }
         this.setState({categories: cat})
         this.getPosts()
     }
 
-    generateData = () => {
-        this.setState({loading: true})
-        setTimeout(() => {
-            let data = this.state.data;
-            for (let i = 0; i < 6; i++) {
-
-                data.push({
-                    title: faker.lorem.slug(3),
-                    subtitle: faker.lorem.slug(10),
-                    creator: faker.name.firstName(),
-                    small_text: faker.lorem.paragraph(),
-                    category: faker.lorem.slug(1),
-
-                });
-            }
-            this.setState({data: data, loading: false})
-        }, 2000)
-    }
     getPosts = () => {
         this.setState({loading: true})
-        const {page} = this.state;
-
+        const {page, data} = this.state;
+        let _items = [];
         this.apiBlog.getPosts(page).then(items => {
-            if (items.count === 0) {
+            if (items.items.length === 0) {
                 this.setState({postsEnd: true})
                 return;
             }
-            this.setState({data: items.items, page: page + 1})
+            _items = data.concat(items.items);
+
+            this.setState({data: _items, page: page + 1})
         });
 
         setTimeout(() => this.setState({loading: false}), 650)
     }
 
     searchOnPage = (e) => {
-        let search = e.target.value;
+        let search = e.target.value.toLowerCase();
         this.props.dispatch(changeSearchInput(search));
 
-        let filtered = this.state.data.filter(item => item.title.indexOf(search) !== -1);
+        let filtered = this.state.data.filter(item => item.title.toLowerCase().indexOf(search) !== -1);
 
         let isSearch = search.length > 0;
 
@@ -87,7 +68,6 @@ class MainPage extends React.Component {
         const {data, search, filteredData, loading, categories, postsEnd} = this.state;
 
         const items = search ? filteredData : data;
-
 
         return <Layout>
             <AppHeader/>

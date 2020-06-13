@@ -22,13 +22,13 @@ class Login extends React.Component {
     login = () => {
         const fieldData = this.formRef.current.getFieldsValue()
         this.blogApi.login(fieldData).then(data => {
-            if (data.status === 'success') {
+            if (data.success) {
                 this.props.dispatch(setUserInfo(data.data.user_info));
-                localStorage.setItem('access_token', data.data.user_info.access_token)
+                localStorage.setItem('access_token', data.data.access_token.value)
                 this.props.history.push('/')
                 return;
             }
-            if (data.status === 'auth_error') {
+            if (!data.success) {
                 notification.error({
                     message: data.message
                 });

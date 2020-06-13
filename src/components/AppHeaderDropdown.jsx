@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Dropdown, Menu, Modal, Result, Space} from "antd";
+import {Button, Dropdown, Menu, Modal, Space} from "antd";
 import {DashboardOutlined, DownOutlined, LogoutOutlined, MenuOutlined, UserOutlined} from "@ant-design/icons";
 import {Link} from "react-router-dom";
 import InfoCircleOutlined from "@ant-design/icons/lib/icons/InfoCircleOutlined";
@@ -11,6 +11,12 @@ function showInfoModal() {
         content: <div>Для работы, необходимо запустить API сервер на локальной машине. Репозиторий с API <a
             href='https://vk.cc/av6Ww7' target='_blank'>https://vk.cc/av6Ww7</a></div>
     });
+}
+
+function logOut() {
+    localStorage.clear()
+    sessionStorage.clear()
+    window.location.reload()
 }
 
 export default function ({user_info}) {
@@ -27,7 +33,7 @@ export default function ({user_info}) {
                 </Link>
             </Menu.Item> : null
         }
-        <Menu.Item key="3">
+        <Menu.Item key="3" onClick={logOut}>
             <LogoutOutlined/> Выйти
         </Menu.Item>
     </Menu>;
