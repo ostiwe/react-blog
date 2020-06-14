@@ -8,8 +8,8 @@ import moment from 'moment';
 import 'moment/min/locales';
 
 function RenderColumnItems({
-                               items, search_input, categories, loading,
-                               loadData, searchOnPage, postsEnd
+                               items, search_input, tags, loading,
+                               loadData, searchOnPage, postsEnd, onSelectCategory
                            }) {
     const sidebarForm = (
         <Form>
@@ -17,8 +17,8 @@ function RenderColumnItems({
                    placeholder={'Что ищем?'}/>
             <Divider type={"horizontal"}/>
             <p>Категории</p>
-            {categories.map(item => <Tag key={item.id}>
-                <Link to={`/category/${item.id}`}>{item.title}</Link>
+            {tags.map(item => <Tag key={item.id}>
+                <Link to={`/tag/${item.id}`} onClick={onSelectCategory}>{item.ru_name ?? item.name}</Link>
             </Tag>)}
         </Form>
     );
@@ -30,16 +30,28 @@ function RenderColumnItems({
         </Row>
         <Row gutter={[48, 16]}>
             <Col xl={19} lg={19} md={17} sm={48} xs={48} style={{width: '100%'}}>
-                {items.map((item, index) => {
-                    return <Card className={'app-main-card'} title={<Space className={'app-main-card-meta__top'}>
-                        <Avatar size={"small"} shape={"circle"}>{item.creator.login[0]}</Avatar>
-                        <span>Пост от {item.creator.login}</span>
-                    </Space>} key={item.id} extra={<Space className={'app-main-card-meta__top'}>
-                        {moment(parseInt(item.published) * 1000).locale('ru-RU').calendar()}
-                    </Space>}>
+                {items.map((item) => {
+                    return <Card className={'app-main-card'} title={
+                        <Space className={'app-main-card-meta__top'}>
+                            <Avatar size={"small"} shape={"circle"}>{item.creator.login[0]}</Avatar>
+                            <span>Пост от {item.creator.login}</span>
+                        </Space>} key={item.id}
+                                 extra={<Space className={'app-main-card-meta__top'}>
+                                     {moment(parseInt(item.published) * 1000).locale('ru-RU').calendar()}
+                                 </Space>}>
                         <Typography.Title level={3}>{item.title}</Typography.Title>
-                        {item.content}
+                        {item.description ?? item.content.substring(0, 200) + '...'}
                         <Divider/>
+                        <div className={'app-main-card-footer'}>
+                            <div className="app-main-card-footer__tags">
+                                {item.tags.map(tag => {
+                                    return <Tag key={tag.id}>{tag.ru_name ?? tag.name}</Tag>
+                                })}
+                            </div>
+                            <div className="app-main-card-footer__button">
+                                <Link to={`/post/${item.id}`}>Подробнее</Link>
+                            </div>
+                        </div>
                         {/*<Card.Meta description={<div>*/}
                         {/*    <Tag>{item.category}</Tag>*/}
                         {/*</div>}/>*/}

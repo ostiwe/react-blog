@@ -1,5 +1,7 @@
 import {notification} from "antd";
 
+enum HttpMethods {'get' = 'GET', 'post' = 'POST', 'put' = 'PUT'}
+
 class BlogApi {
     private readonly host: string;
     private accessToken: string | undefined;
@@ -14,27 +16,43 @@ class BlogApi {
     }
 
     register(formData: object) {
-        return this.sendRequest('/auth/register', 'POST',
+        return this.sendRequest('/auth/register', HttpMethods.post,
             formData, [['Content-type', 'application/json']])
     }
 
     login(formData: object) {
-        return this.sendRequest('/auth/login', 'POST',
+        return this.sendRequest('/auth/login', HttpMethods.post,
             formData, [['Content-type', 'application/json']])
     }
 
-    getPosts(page: number) {
-        return this.sendRequest('/posts', 'GET',
+    getPosts(page: number, params: object = {}) {
+        return this.sendRequest('/posts', HttpMethods.get,
+            {page: page, ...params}, [['Content-type', 'application/json']])
+    }
+
+    getPostsByCategory(tag: number, page: number) {
+        return this.sendRequest('/tag/' + tag, HttpMethods.get,
             {page: page}, [['Content-type', 'application/json']])
     }
 
+    getTags() {
+        return this.sendRequest('/tags', HttpMethods.get)
+    }
+
     getUserInfo() {
-        return this.sendRequest('/auth/info', 'POST',
+        return this.sendRequest('/auth/info', HttpMethods.post,
             {access_token: this.accessToken}, [['Content-type', 'application/json']])
     }
 
+    getPostById(postId: number) {
+        return this.sendRequest(`/post/${postId}`, HttpMethods.get)
+    }
 
-    serialiseObject(obj: any): string {
+    getComments(postId: number) {
+        return this.sendRequest(`/comments/${postId}`, HttpMethods.get)
+    }
+
+    private serialiseObject(obj: any): string {
         let pairs = [];
         for (let prop in obj) {
             if (!obj.hasOwnProperty(prop)) {
@@ -51,11 +69,11 @@ class BlogApi {
         return pairs.join('&');
     }
 
-    sendRequest(url: string, method: string, data: object, headers?: [[any, any]]) {
+    sendRequest(url: string, method: HttpMethods, data: object = {}, headers?: [[any, any]]) {
         return new Promise((resolve, reject) => {
             let xr = new XMLHttpRequest();
 
-            if (method === "GET") {
+            if (method === HttpMethods.get && Object.keys(data).length > 0) {
                 xr.open(method, this.host + url + `?${this.serialiseObject(data)}`)
             } else xr.open(method, this.host + url)
 

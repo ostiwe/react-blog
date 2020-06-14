@@ -54,6 +54,10 @@
 .app-main-card-meta__top {
   font-size: 10pt;
 }
+.app-main-card-footer {
+  display: flex;
+  justify-content: space-between;
+}
 .app-auth-wrapper {
   width: 60%;
   margin: 0 auto;
@@ -61,6 +65,10 @@
 }
 .app-auth-form-stepContent {
   padding: 50px 0;
+}
+.app-icon {
+  display: flex;
+  align-items: center;
 }
 
 .load-more-button-place {
@@ -83,6 +91,37 @@
   padding: 20px;
 }
 
+.back-btn-animated:hover .back-btn-animated-icon, .back-btn-animated:focus .back-btn-animated-icon {
+  animation: animateBackBtn infinite 1.3s;
+}
+
+.post-content {
+  padding: 16px 24px;
+  background: white;
+}
+.post-content-body {
+  padding: 0 0 16px;
+}
+.post-content-footer {
+  display: flex;
+  justify-content: space-between;
+}
+.post-content-footer-stats-item {
+  display: flex;
+  align-content: center;
+}
+.post-content-footer-stats-item > *:first-child {
+  margin-right: 5px;
+}
+.post-comment-item {
+  background: white;
+  padding: 16px;
+}
+.post-comment-editor {
+  background: white;
+  padding: 0 16px;
+}
+
 @keyframes showCards {
   from {
     transform: scale(0);
@@ -91,6 +130,17 @@
   to {
     transform: scale(1);
     opacity: 1;
+  }
+}
+@keyframes animateBackBtn {
+  from {
+    transform: translate(0);
+  }
+  50% {
+    transform: translate(-5px);
+  }
+  to {
+    transform: translate(0);
   }
 }
 /* MEDIA */

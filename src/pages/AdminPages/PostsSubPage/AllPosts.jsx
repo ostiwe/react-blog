@@ -56,11 +56,14 @@ class AllPosts extends Component {
                           <Divider><Button loading={load} disabled={load} onClick={this.getPosts}>Загрузить еще</Button></Divider> :
                           <Divider>На этом все</Divider>}
                       renderItem={(item, index) => {
-                          return <List.Item className={'post-row'} key={index} extra={[<Button.Group>
-                              <Button><MoreOutlined/></Button>
-                              <Button><MoreOutlined/></Button>
-                          </Button.Group>]}>
-                              <List.Item.Meta avatar={<Avatar>{item.creator.login[0].toUpperCase()}</Avatar>}
+                          return <List.Item className={'post-row'} key={item.id} extra={[
+                              <Button.Group key={"btn_group_" + item.id}>
+                                  <Button><MoreOutlined/></Button>
+                                  <Button><MoreOutlined/></Button>
+                              </Button.Group>
+                          ]}>
+                              <List.Item.Meta key={"meta_" + item.id}
+                                              avatar={<Avatar>{item.creator.login[0].toUpperCase()}</Avatar>}
                                               title={item.title}
                                               description={<div>
                                                   <Space>
@@ -77,7 +80,8 @@ class AllPosts extends Component {
                           </List.Item>
                       }}/>
             </div>
-        );
+        )
+            ;
     }
 }
 

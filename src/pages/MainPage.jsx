@@ -1,7 +1,6 @@
 import React from "react";
 import {connect} from "react-redux";
 import {BackTop, Layout} from "antd";
-import faker from 'faker';
 import {changeSearchInput} from "../redux/actions/mainActions";
 import {withRouter} from "react-router-dom";
 import {AppFooter, AppHeader, RenderColumnItems} from "../components";
@@ -14,7 +13,7 @@ class MainPage extends React.Component {
         super(props);
         this.state = {
             data: [],
-            categories: [],
+            tags: [],
             page: 1,
             search: false,
             filteredData: [],
@@ -25,15 +24,16 @@ class MainPage extends React.Component {
     }
 
     componentDidMount() {
-        let cat = [];
-        for (let i = 1; i < 6; i++) {
-            cat.push({
-                id: i,
-                title: faker.lorem.slug(1),
-            });
-        }
-        this.setState({categories: cat})
-        this.getPosts()
+        this.getTags();
+        this.getPosts();
+    }
+
+    getTags = () => {
+        this.apiBlog.getTags().then(tags => {
+            if (tags.items) {
+                this.setState({tags: tags.items})
+            }
+        });
     }
 
     getPosts = () => {
@@ -48,9 +48,9 @@ class MainPage extends React.Component {
             _items = data.concat(items.items);
 
             this.setState({data: _items, page: page + 1})
-        });
+            setTimeout(() => this.setState({loading: false}), 650)
+        }).catch(() => setTimeout(() => this.setState({loading: false}), 650));
 
-        setTimeout(() => this.setState({loading: false}), 650)
     }
 
     searchOnPage = (e) => {
@@ -65,7 +65,7 @@ class MainPage extends React.Component {
     }
 
     render() {
-        const {data, search, filteredData, loading, categories, postsEnd} = this.state;
+        const {data, search, filteredData, loading, tags, postsEnd} = this.state;
 
         const items = search ? filteredData : data;
 
@@ -74,7 +74,7 @@ class MainPage extends React.Component {
 
             <Content className={'app-content'}>
                 <BackTop/>
-                <RenderColumnItems postsEnd={postsEnd} loading={loading} items={items} categories={categories}
+                <RenderColumnItems postsEnd={postsEnd} loading={loading} items={items} tags={tags}
                                    loadData={this.getPosts} searchOnPage={this.searchOnPage}/>
             </Content>
             <AppFooter/>

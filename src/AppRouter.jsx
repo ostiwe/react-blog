@@ -2,11 +2,13 @@ import React from 'react';
 import {connect} from "react-redux";
 import {Route, Switch, withRouter,} from "react-router-dom";
 
-import {Button, Layout, notification, Result} from "antd";
-import {Admin, CategoryPage, Login, MainPage, Register} from "./pages";
+import {Button, Layout, message, notification, Result} from "antd";
+import {Admin, CategoryPage, Login, MainPage, PostPage, Register} from "./pages";
 import {AppFooter, AppHeader} from "./components";
 import apiBlog from "./assets/js/BlogApiSettings";
 import {setUserInfo} from "./redux/actions/mainActions";
+import Websocket from "./assets/js/websocket";
+import HomeOutlined from "@ant-design/icons/lib/icons/HomeOutlined";
 
 const {Content} = Layout;
 
@@ -17,14 +19,19 @@ const appRoutes = [
         component: MainPage,
     },
     {
-        path: '/category/:category',
+        path: '/tag/:tag',
         component: CategoryPage,
+    },
+    {
+        path: '/post/:id',
+        component: PostPage
     },
 
     {
         path: ['/admin/:section', '/admin'],
         component: Admin
     },
+
 
     {
         path: '/login',
@@ -41,6 +48,7 @@ class AppRouter extends React.Component {
         super(props);
         this.state = {};
         this.apiBlog = apiBlog;
+        this.ws = null;
     }
 
     componentDidMount() {
@@ -66,9 +74,17 @@ class AppRouter extends React.Component {
                     })
                 }
                 if (response.success) {
+                    let host = "ws://127.0.0.1:9909";
+                    let token = response.data.access_token.value;
+
+                    this.ws = new Websocket(host, token)
+                    this.ws.setOnMessage(ev => this.notificationHandler(ev))
+                    this.ws.setOnSocketError(ev => this.wsError(ev))
+
+
                     let user_info = {
                         ...response.data.user_info,
-                        access_token: response.data.access_token.value
+                        access_token: token
                     };
                     dispatch(setUserInfo(user_info));
                     this.forceUpdate();
@@ -76,6 +92,23 @@ class AppRouter extends React.Component {
             });
         }
     }
+
+    notificationHandler(ev) {
+        let event = JSON.parse(ev.data);
+        if (event.type === 'service') return this.serviceNotification(event);
+    }
+
+    wsError(ev) {
+        message.error("Неудалось подключиться к сервису уведомлений");
+    }
+
+    serviceNotification(event) {
+        notification.open({
+            type: event.payload.notification_type,
+            message: event.payload.notification_message
+        });
+    }
+
 
     render() {
         return <Layout>
@@ -88,7 +121,10 @@ class AppRouter extends React.Component {
                     <AppHeader/>
                     <Content className={'app-content'}>
                         <Result status={404} title={'Мы не нашли необходимую вам страницу'}
-                                extra={<Button>На главную</Button>}/>
+                                extra={<Button icon={<HomeOutlined/>}
+                                               onClick={() => this.props.history.push('/')}>
+                                    На главную
+                                </Button>}/>
                     </Content>
                     <AppFooter/>
                 </Route>

@@ -1,5 +1,5 @@
 import BlogApi from "./BlogApi";
 
-let apiBlog = new BlogApi("http://api.symfony.com");
+let apiBlog = new BlogApi("https://api.symfony.com");
 
 export default apiBlog;

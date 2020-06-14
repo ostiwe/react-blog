@@ -80,6 +80,11 @@
           font-size: 10pt;
         }
       }
+
+      &-footer {
+        display: flex;
+        justify-content: space-between;
+      }
     }
   }
 
@@ -95,6 +100,11 @@
         padding: 50px 0;
       }
     }
+  }
+
+  &-icon {
+    display: flex;
+    align-items: center;
   }
 }
 
@@ -112,10 +122,61 @@
   width: fit-content;
   margin: 10px;
 }
+
 .post-row {
   background-color: white;
   padding: 20px;
 }
+
+.back-btn {
+  &-animated {
+    &:hover, &:focus {
+      .back-btn-animated-icon {
+        animation: animateBackBtn infinite 1.3s;
+      }
+    }
+  }
+}
+
+.post {
+  &-content {
+    padding: 16px 24px;
+    background: white;
+
+    &-body {
+      padding: 0 0 16px;
+    }
+
+    &-footer {
+      display: flex;
+      justify-content: space-between;
+
+      &-stats {
+        &-item {
+          display: flex;
+          align-content: center;
+
+          & > *:first-child {
+            margin-right: 5px;
+          }
+        }
+      }
+    }
+  }
+
+  &-comment {
+    &-item {
+      background: white;
+      padding: 16px;
+    }
+
+    &-editor {
+      background: white;
+      padding: 0 16px;
+    }
+  }
+}
+
 
 @keyframes showCards {
   from {
@@ -126,6 +187,18 @@
   to {
     transform: scale(1);
     opacity: 1;
+  }
+}
+
+@keyframes animateBackBtn {
+  from {
+    transform: translate(0);
+  }
+  50% {
+    transform: translate(-5px);
+  }
+  to {
+    transform: translate(0);
   }
 }
 

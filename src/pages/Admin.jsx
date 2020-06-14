@@ -4,7 +4,7 @@ import {Link, Route, Switch, withRouter} from "react-router-dom";
 import {Col, Divider, Layout, Menu, Row, Spin} from "antd";
 import {AppFooter, AppHeader} from "../components";
 import apiBlog from "../assets/js/BlogApiSettings";
-import {Posts} from "./AdminPages";
+import {Home, Posts} from "./AdminPages";
 
 
 const {Content} = Layout;
@@ -16,7 +16,7 @@ class Admin extends React.Component {
         this.state = {
             user_info: {},
             loading: true,
-            selectedMenu: '/admin/posts',
+            selectedMenu: '/admin',
         };
         this.apiBlog = apiBlog;
     }
@@ -49,12 +49,18 @@ class Admin extends React.Component {
     }
 
     componentDidMount() {
-        const {history, match, location} = this.props;
+        // const {history, match, location} = this.props;
+        // if (!match.params.section) {
+        //     history.push('/admin/posts/all');
+        // }
 
-        if (!match.params.section) {
-            history.push('/admin/posts/all');
-        }
+        this.selectMenuItemByUrl();
+        this.getUserData();
 
+    }
+
+    selectMenuItemByUrl() {
+        const {location} = this.props;
         let url = location.pathname.split('/');
 
         if (url.length > 3) {
@@ -62,28 +68,25 @@ class Admin extends React.Component {
             url = arr.join('/')
         } else url = url.join('/');
 
-        console.log(url);
         this.setState({selectedMenu: url});
-
-        this.getUserData();
-
     }
 
     selectMenuItem = (e) => {
         this.setState({selectedMenu: e.key})
     }
 
+
     render() {
         // const {match, location} = this.props;
         const {loading, selectedMenu} = this.state;
         const adminPages = [
-            // {
-            //     path: `${match.url}`,
-            //     component: Home,
-            //     ex: true
-            // },
             {
-                path: ['/admin/posts','/admin/posts/:section'],
+                path: '/admin',
+                component: Home,
+                ex: true
+            },
+            {
+                path: ['/admin/posts', '/admin/posts/:section'],
                 component: Posts
             },
             {
@@ -99,13 +102,13 @@ class Admin extends React.Component {
                     <Row gutter={[20, 0]} className={'app-content-side'}>
                         <Col xl={5} lg={5} md={5} sm={10} xs={0}>
                             <Menu onSelect={this.selectMenuItem} selectedKeys={[selectedMenu]}>
-                                {/*<Menu.Item key={'home'}>*/}
-                                {/*    <Link to={match.url}>*/}
-                                {/*        Главная*/}
-                                {/*    </Link>*/}
-                                {/*</Menu.Item>*/}
+                                <Menu.Item key={'/admin'}>
+                                    <Link to={'/admin'}>
+                                        Главная
+                                    </Link>
+                                </Menu.Item>
                                 <Menu.Item key={`/admin/posts`}>
-                                    <Link to={'/admin/posts'}>
+                                    <Link to={'/admin/posts/all'}>
                                         Посты
                                     </Link>
                                 </Menu.Item>
