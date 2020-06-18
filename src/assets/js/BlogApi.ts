@@ -31,7 +31,7 @@ class BlogApi {
     }
 
     getPostsByCategory(tag: number, page: number) {
-        return this.sendRequest('/tag/' + tag, HttpMethods.get,
+        return this.sendRequest(`/tag/${tag}`, HttpMethods.get,
             {page: page}, [['Content-type', 'application/json']])
     }
 
@@ -50,6 +50,14 @@ class BlogApi {
 
     getComments(postId: number) {
         return this.sendRequest(`/comments/${postId}`, HttpMethods.get)
+    }
+
+    getUsersCount() {
+        return this.sendRequest('/users/count', HttpMethods.get)
+    }
+
+    getPostsCount() {
+        return this.sendRequest('/posts/count', HttpMethods.get)
     }
 
     private serialiseObject(obj: any): string {
@@ -72,9 +80,9 @@ class BlogApi {
     sendRequest(url: string, method: HttpMethods, data: object = {}, headers?: [[any, any]]) {
         return new Promise((resolve, reject) => {
             let xr = new XMLHttpRequest();
-
             if (method === HttpMethods.get && Object.keys(data).length > 0) {
-                xr.open(method, this.host + url + `?${this.serialiseObject(data)}`)
+                let query = this.serialiseObject(data);
+                xr.open(method, this.host + url + `?${query}`)
             } else xr.open(method, this.host + url)
 
             xr.onload = function () {

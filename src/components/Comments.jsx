@@ -2,10 +2,14 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import apiBlog from "../assets/js/BlogApiSettings";
-import {Avatar, Comment, Input, List, Form, Button, Divider, Empty} from "antd";
+import {Avatar, Button, Comment, Divider, Empty, Form, List, Result} from "antd";
 import moment from "moment";
+import {EditorState} from 'draft-js';
+import {Editor} from 'react-draft-wysiwyg';
+// import draftToMarkdown from 'draftjs-to-markdown';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
+import LockOutlined from "@ant-design/icons/lib/icons/LockOutlined";
 
-const {TextArea} = Input;
 
 class Comments extends Component {
     constructor(props) {
@@ -13,7 +17,7 @@ class Comments extends Component {
         this.state = {
             comments: [],
             loading: true,
-            user_comment: '',
+            editorState: EditorState.createEmpty(),
             comment_sending: false,
         };
         this.apiBlog = apiBlog;
@@ -41,20 +45,21 @@ class Comments extends Component {
         clearInterval(this.updateCommentsIntervalId)
     }
 
-    onChange = (e) => {
-        this.setState({user_comment: e.target.value})
+    onChange = (editorState) => {
+        this.setState({editorState})
     }
 
     onSubmit = () => {
     }
 
     render() {
-        const {comments, user_comment, comment_sending, loading} = this.state;
+        const {comments, editorState, comment_sending, loading} = this.state;
         const {user_info} = this.props;
 
         const commentEditor = <>
             <Form.Item>
-                <TextArea rows={4} onChange={this.onChange} value={user_comment}/>
+                <Editor editorClassName="comment-editor" editorState={editorState}
+                        onEditorStateChange={this.onChange}/>
             </Form.Item>
             <Form.Item>
                 <Button htmlType="submit" loading={comment_sending} onClick={this.onSubmit} type="primary">
@@ -87,8 +92,11 @@ class Comments extends Component {
                 }) : !loading && <Empty description={'Комментариев пока нет'}/>}
             </List>
             <Divider/>
-            <Comment className={'post-comment-editor'}
-                     avatar={<Avatar>{user_info && user_info.login[0].toUpperCase()}</Avatar>} content={commentEditor}/>
+            {((user_info && parseInt(user_info.mask)) & 16) ?
+                <Comment className={'post-comment-editor'}
+                         avatar={<Avatar>{user_info && user_info.login[0].toUpperCase()}</Avatar>}
+                         content={commentEditor}/>
+                : <Result icon={<LockOutlined/>} subTitle={'Вы не можете оставлять тут комментарии'}/>}
         </div>
             ;
     }

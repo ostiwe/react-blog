@@ -122,6 +122,11 @@
   padding: 0 16px;
 }
 
+.comment-editor {
+  padding: 0 16px;
+  border: 1px solid #F1F1F1;
+}
+
 @keyframes showCards {
   from {
     transform: scale(0);

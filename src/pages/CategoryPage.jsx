@@ -42,9 +42,14 @@ class CategoryPage extends React.Component {
 
     getPosts = (tag) => {
         this.setState({loading: true})
-        const {page, data} = this.state;
+        const {page, data, currentTag} = this.state;
+        let _tag;
         let _items = [];
-        this.apiBlog.getPostsByCategory(tag, page).then(items => {
+
+        typeof tag !== 'object' ? _tag = tag : _tag = currentTag.id;
+
+
+        this.apiBlog.getPostsByCategory(_tag, page).then(items => {
             if (items.items.length === 0) {
                 this.setState({postsEnd: true})
                 return;
