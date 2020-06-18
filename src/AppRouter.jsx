@@ -95,6 +95,22 @@ class AppRouter extends React.Component {
                 }
             });
         }
+
+        let browserLang = window.navigator.language || window.navigator.userLanguage;
+
+        if (browserLang !== 'ru-RU') {
+            notification.info({
+                message: 'Change language to English?',
+                duration: 10,
+                key: 'change_lang',
+                btn: <Button.Group>
+                    <Button onClick={() => {
+                        dispatch(setLocale('en'));
+                        notification.close('change_lang')
+                    }}>Yes, please</Button>
+                </Button.Group>,
+            });
+        }
     }
 
     notificationHandler(ev) {

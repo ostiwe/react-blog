@@ -1,22 +1,14 @@
 import React from "react";
-import {Button, Dropdown, Menu, Modal, Space} from "antd";
+import {Button, Dropdown, Menu, Space} from "antd";
 import {DashboardOutlined, DownOutlined, LogoutOutlined, MenuOutlined, UserOutlined} from "@ant-design/icons";
 import {Link} from "react-router-dom";
-import InfoCircleOutlined from "@ant-design/icons/lib/icons/InfoCircleOutlined";
 import lang from "../assets/js/lang";
-
-function showInfoModal() {
-    Modal.info({
-        title: "Информация",
-        maskClosable: true,
-        content: <div>Для работы, необходимо запустить API сервер на локальной машине. Репозиторий с API <a
-            href='https://vk.cc/av6Ww7' target='_blank'>https://vk.cc/av6Ww7</a></div>
-    });
-}
+import apiBlog from "../assets/js/BlogApiSettings";
 
 function logOut() {
     localStorage.clear()
     sessionStorage.clear()
+    apiBlog.logout()
     window.location.reload()
 }
 
@@ -65,7 +57,6 @@ export default function ({user_info, locale}) {
         </Dropdown> : <div>
             {AuthDropdown}
             <Space className={'app-header-auth-buttons'}>
-                <Button onClick={showInfoModal}><InfoCircleOutlined/></Button>
                 <Link to={'/register'}>
                     <Button>
                         {lang.sign_up_link[locale]}
