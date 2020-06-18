@@ -12,16 +12,16 @@ export function changeSearchInput(payload) {
     }
 }
 
-export function emulateLogin(login) {
-    return {
-        type: 'EMULATE_LOGIN',
-        payload: login
-    }
-}
-
 export function setUserInfo(userInfo) {
     return {
         type: 'SET_USER_INFO',
         payload: userInfo
+    }
+}
+
+export function setLocale(locale) {
+    return {
+        type: 'SET_LOCALE',
+        payload: locale
     }
 }

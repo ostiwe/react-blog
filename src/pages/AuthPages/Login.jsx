@@ -4,8 +4,9 @@ import {AppFooter, AppHeader} from "../../components";
 import Reaptcha from "reaptcha";
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
-import {setUserInfo} from "../../redux/actions/mainActions";
+import {setLocale, setUserInfo} from "../../redux/actions/mainActions";
 import apiBlog from "../../assets/js/BlogApiSettings";
+import lang from "../../assets/js/lang";
 
 const {Content} = Layout;
 
@@ -24,6 +25,7 @@ class Login extends React.Component {
         this.blogApi.login(fieldData).then(data => {
             if (data.success) {
                 this.props.dispatch(setUserInfo(data.data.user_info));
+                this.props.dispatch(setLocale(data.data.user_info.locale));
                 localStorage.setItem('access_token', data.data.access_token.value)
                 this.props.history.push('/')
                 return;
@@ -41,6 +43,7 @@ class Login extends React.Component {
     render() {
 
         const {robotCheck} = this.state;
+        const {locale} = this.props;
         return (
             <Layout>
                 <AppHeader/>
@@ -48,13 +51,13 @@ class Login extends React.Component {
                     <div className="app-auth-wrapper">
                         <Card>
                             <Form ref={this.formRef} layout={"vertical"}>
-                                <Form.Item name={'login'} label={'Ваш логин'}>
+                                <Form.Item name={'login'} label={lang.login_username[locale]}>
                                     <Input/>
                                 </Form.Item>
-                                <Form.Item name={'password'} label={'Ваш пароль'}>
+                                <Form.Item name={'password'} label={lang.login_password[locale]}>
                                     <Input.Password/>
                                 </Form.Item>
-                                <Form.Item label={'Проверим, что вы не робот'}>
+                                <Form.Item label={lang.captcha[locale]}>
                                     <Reaptcha sitekey={'6LdEz_QUAAAAAJ1K93ruihvsy0QtWTP98lWYBPW4'} onVerify={() => {
                                         this.setState({robotCheck: true})
                                     }} onExpire={() => this.setState({robotCheck: false})}/>
@@ -62,7 +65,7 @@ class Login extends React.Component {
                                 <Form.Item>
                                     <Button
                                         onClick={this.login}
-                                        disabled={!robotCheck}>{robotCheck ? 'Войти' : 'Докажите что вы не робот'}</Button>
+                                        disabled={!robotCheck}>{robotCheck ? lang.login_btn[locale] : lang.button_need_captcha[locale]}</Button>
                                 </Form.Item>
                             </Form>
                         </Card>

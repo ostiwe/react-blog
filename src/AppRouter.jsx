@@ -6,9 +6,11 @@ import {Button, Layout, message, notification, Result} from "antd";
 import {Admin, CategoryPage, Login, MainPage, PostPage, Register} from "./pages";
 import {AppFooter, AppHeader} from "./components";
 import apiBlog from "./assets/js/BlogApiSettings";
-import {setUserInfo} from "./redux/actions/mainActions";
+import {setLocale, setUserInfo} from "./redux/actions/mainActions";
 import Websocket from "./assets/js/websocket";
 import HomeOutlined from "@ant-design/icons/lib/icons/HomeOutlined";
+
+import lang from "./assets/js/lang";
 
 const {Content} = Layout;
 
@@ -52,7 +54,7 @@ class AppRouter extends React.Component {
     }
 
     componentDidMount() {
-        const {user_info, history, location, dispatch} = this.props;
+        const {user_info, history, location, dispatch, locale} = this.props;
         const access_token = localStorage.getItem('access_token')
         const has_access_token = access_token !== null && access_token !== '' && access_token !== undefined;
         const is_auth_page = location.pathname === '/login' || location.pathname === '/register';
@@ -69,8 +71,8 @@ class AppRouter extends React.Component {
                 if (!response.success && !is_auth_page) {
                     notification.warn({
                         key: 'auth_expired',
-                        message: "Ваша сессия устарела, необходимо повторить вход",
-                        btn: <Button onClick={goAuth}>Повторить вход</Button>
+                        message: lang.auth_expire[locale],
+                        btn: <Button onClick={goAuth}>{lang.auth_expire_try_btn[locale]}</Button>
                     })
                 }
                 if (response.success) {
@@ -86,7 +88,9 @@ class AppRouter extends React.Component {
                         ...response.data.user_info,
                         access_token: token
                     };
+
                     dispatch(setUserInfo(user_info));
+                    dispatch(setLocale(response.data.user_info.locale.toLowerCase()));
                     this.forceUpdate();
                 }
             });
@@ -99,7 +103,9 @@ class AppRouter extends React.Component {
     }
 
     wsError(ev) {
-        message.error("Неудалось подключиться к сервису уведомлений");
+        const {locale} = this.props;
+        console.error(ev);
+        message.error(lang.ws_error_connect[locale]);
     }
 
     serviceNotification(event) {
@@ -111,6 +117,7 @@ class AppRouter extends React.Component {
 
 
     render() {
+        const {locale} = this.props;
         return <Layout>
             <Switch>
                 {appRoutes.map((route, index) =>
@@ -120,10 +127,10 @@ class AppRouter extends React.Component {
                 <Route path={'*'}>
                     <AppHeader/>
                     <Content className={'app-content'}>
-                        <Result status={404} title={'Мы не нашли необходимую вам страницу'}
+                        <Result status={404} title={lang.page_not_found[locale].title}
                                 extra={<Button icon={<HomeOutlined/>}
                                                onClick={() => this.props.history.push('/')}>
-                                    На главную
+                                    {lang.page_not_found[locale].button}
                                 </Button>}/>
                     </Content>
                     <AppFooter/>

@@ -7,6 +7,7 @@ import {AppFooter, AppHeader, Post} from "../components";
 import FrownOutlined from "@ant-design/icons/lib/icons/FrownOutlined";
 import ArrowLeftOutlined from "@ant-design/icons/lib/icons/ArrowLeftOutlined";
 import LoadingOutlined from "@ant-design/icons/lib/icons/LoadingOutlined";
+import lang from "../assets/js/lang";
 
 const {Content} = Layout;
 
@@ -27,9 +28,9 @@ class PostPage extends Component {
         const postId = match.params.id;
 
         this.apiBlog.getPostById(postId).then(response => {
-            if (response.success && !response.success) {
-                this.setState({notFound: true});
-                return;
+            if (response.success === false) {
+                this.setState({notFound: true, load: false});
+                return
             }
             this.setState({post: response, load: false})
         })
@@ -38,14 +39,18 @@ class PostPage extends Component {
 
     render() {
         const {load, notFound, post} = this.state;
+        const {locale} = this.props;
         return <Layout>
             <AppHeader/>
             <Content className={'app-content'}>
-                {notFound && <Result icon={<FrownOutlined/>} title={'Такого поста нет'}
-                                     subTitle={'Или, возможно, произошла ошибка при загрузке данных'} extra={<Button
-                    onClick={this.props.history.goBack} className={'back-btn-animated'}
-                    icon={<ArrowLeftOutlined className={'back-btn-animated-icon'}/>}>Назад</Button>}/>}
-                {load && <Result icon={<LoadingOutlined/>} title={'Ищу пост...'}/>}
+                {notFound && <Result icon={<FrownOutlined/>} title={lang.post_not_found[locale].title}
+                                     subTitle={lang.post_not_found[locale].subtitle} extra={
+                    <Button onClick={this.props.history.goBack} className={'back-btn-animated'}
+                            icon={<ArrowLeftOutlined className={'back-btn-animated-icon'}/>}>
+                        {lang.back[locale]}
+                    </Button>}/>}
+                {load && <Result icon={<LoadingOutlined/>} title={lang.post_loading[locale]}/>}
+
                 {(!notFound && !load) && <Post post={post}/>}
             </Content>
             <AppFooter/>

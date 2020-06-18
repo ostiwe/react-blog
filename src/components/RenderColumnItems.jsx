@@ -6,20 +6,24 @@ import {connect} from "react-redux";
 
 import moment from 'moment';
 import 'moment/min/locales';
+import lang from "../assets/js/lang";
 
 function RenderColumnItems({
                                items, search_input, tags, loading,
-                               loadData, searchOnPage, postsEnd, onSelectCategory
+                               loadData, searchOnPage, postsEnd, locale
                            }) {
     const sidebarForm = (
         <Form>
             <Input value={search_input} onChange={searchOnPage} suffix={<SearchOutlined/>}
-                   placeholder={'Что ищем?'}/>
+                   placeholder={lang.search_box_text[locale]}/>
             <Divider type={"horizontal"}/>
-            <p>Категории</p>
-            {tags.map(item => <Tag key={item.id}>
-                <Link to={`/tag/${item.id}`} onClick={onSelectCategory}>{item.ru_name ?? item.name}</Link>
-            </Tag>)}
+            <p>{lang.categories[locale]}</p>
+            {tags.map(tag => {
+                if (locale === 'ru') {
+                    return <Tag key={tag.id}>{tag.ru_name ?? tag.name}</Tag>
+                }
+                return <Tag key={tag.id}>{tag.name}</Tag>
+            })}
         </Form>
     );
     return <>
@@ -37,7 +41,7 @@ function RenderColumnItems({
                             <span>Пост от {item.creator.login}</span>
                         </Space>} key={item.id}
                                  extra={<Space className={'app-main-card-meta__top'}>
-                                     {moment(parseInt(item.published) * 1000).locale('ru-RU').calendar()}
+                                     {moment(parseInt(item.published) * 1000).locale(locale === 'ru' ? "ru" : 'en').calendar()}
                                  </Space>}>
                         <Typography.Title level={3}>{item.title}</Typography.Title>
                         {item.description ?? item.content.substring(0, 200) + '...'}
@@ -45,11 +49,14 @@ function RenderColumnItems({
                         <div className={'app-main-card-footer'}>
                             <div className="app-main-card-footer__tags">
                                 {item.tags.map(tag => {
-                                    return <Tag key={tag.id}>{tag.ru_name ?? tag.name}</Tag>
+                                    if (locale === 'ru') {
+                                        return <Tag key={tag.id}>{tag.ru_name ?? tag.name}</Tag>
+                                    }
+                                    return <Tag key={tag.id}>{tag.name}</Tag>
                                 })}
                             </div>
                             <div className="app-main-card-footer__button">
-                                <Link to={`/post/${item.id}`}>Подробнее</Link>
+                                <Link to={`/post/${item.id}`}>{lang.post_show_full[locale]}</Link>
                             </div>
                         </div>
                         {/*<Card.Meta description={<div>*/}
@@ -58,9 +65,9 @@ function RenderColumnItems({
                     </Card>
                 })}
                 <div className={'load-more-button-place'}>
-                    {!postsEnd && <Button loading={loading} onClick={loadData}>Загрузить еще</Button>}
+                    {!postsEnd && <Button loading={loading} onClick={loadData}>{lang.load_more[locale]}</Button>}
                     {postsEnd && (
-                        <Divider>Записей больше нет</Divider>
+                        <Divider>{lang.no_more_posts[locale]}</Divider>
                     )}
                 </div>
             </Col>
