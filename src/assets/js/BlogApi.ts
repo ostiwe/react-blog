@@ -60,6 +60,12 @@ class BlogApi {
         return this.sendRequest('/posts/count', HttpMethods.get)
     }
 
+    createComment(postID: number, content: string) {
+        return this.sendRequest(`/comments/${postID}`, HttpMethods.post, {
+            text: content,
+        }, [['Content-type', 'application/json'], ['Token', `${this.accessToken}`]])
+    }
+
     private serialiseObject(obj: any): string {
         let pairs = [];
         for (let prop in obj) {
@@ -77,7 +83,7 @@ class BlogApi {
         return pairs.join('&');
     }
 
-    sendRequest(url: string, method: HttpMethods, data: object = {}, headers?: [[any, any]]) {
+    sendRequest(url: string, method: HttpMethods, data: object = {}, headers?: Array<[string, string]>) {
         return new Promise((resolve, reject) => {
             let xr = new XMLHttpRequest();
             if (method === HttpMethods.get && Object.keys(data).length > 0) {

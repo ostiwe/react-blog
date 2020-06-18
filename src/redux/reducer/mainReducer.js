@@ -5,6 +5,7 @@ const initialState = {
     //     uid: 'adkoiau-asda313-dssds3-32e',
     //     access_token:'skmsadsasd',
     // },
+    locale: 'ru',
     search_input: '',
 };
 
@@ -22,13 +23,10 @@ function mainReducer(state = initialState, action) {
                 ...state,
                 user_info: action.payload
             }
-        case 'EMULATE_LOGIN':
+        case 'SET_LOCALE':
             return {
                 ...state,
-                user_info: {
-                    login: action.payload,
-                    role: 'admin'
-                }
+                locale: action.payload.toLowerCase()
             }
         default:
             return state;

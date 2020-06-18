@@ -4,8 +4,22 @@
   box-sizing: border-box;
 }
 
+body {
+  padding: 0 !important;
+}
+
 #root > .ant-layout {
   min-height: 100vh;
+}
+
+pre {
+  padding: 5px;
+  background-color: rgba(0, 0, 0, 0.08);
+  border-radius: 5px;
+}
+
+.ant-comment {
+  max-width: 100%;
 }
 
 .app-header, .app-footer {
@@ -23,6 +37,9 @@
   display: none;
 }
 .app-footer-content {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
   padding: 20px;
 }
 .app-logo {
@@ -116,6 +133,12 @@
 .post-comment-item {
   background: white;
   padding: 16px;
+}
+.post-comment-item img {
+  width: 40%;
+}
+.post-comment-item ul {
+  padding-left: 18px;
 }
 .post-comment-editor {
   background: white;

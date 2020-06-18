@@ -3,6 +3,7 @@ import {Button, Dropdown, Menu, Modal, Space} from "antd";
 import {DashboardOutlined, DownOutlined, LogoutOutlined, MenuOutlined, UserOutlined} from "@ant-design/icons";
 import {Link} from "react-router-dom";
 import InfoCircleOutlined from "@ant-design/icons/lib/icons/InfoCircleOutlined";
+import lang from "../assets/js/lang";
 
 function showInfoModal() {
     Modal.info({
@@ -19,34 +20,35 @@ function logOut() {
     window.location.reload()
 }
 
-export default function ({user_info}) {
+export default function ({user_info, locale}) {
+
     const menu = user_info && <Menu>
         <Menu.Item key="1">
             <Link to={'/profile'}>
-                <UserOutlined/> Профиль
+                <UserOutlined/> {lang.profile_link[locale]}
             </Link>
         </Menu.Item>
         {user_info.mask ? (user_info.mask & 16) &&
             <Menu.Item key="2">
                 <Link to={'/admin'}>
-                    <DashboardOutlined/> Админка
+                    <DashboardOutlined/> {lang.admin_panel_link[locale]}
                 </Link>
             </Menu.Item> : null
         }
         <Menu.Item key="3" onClick={logOut}>
-            <LogoutOutlined/> Выйти
+            <LogoutOutlined/> {lang.logout_link[locale]}
         </Menu.Item>
     </Menu>;
 
     const authMenu = <Menu>
         <Menu.Item key="register">
             <Link to={'/register'}>
-                Регистрация
+                {lang.sign_up_link[locale]}
             </Link>
         </Menu.Item>
         <Menu.Item key="login">
             <Link to={'/login'}>
-                Вход
+                {lang.sign_in_link[locale]}
             </Link>
         </Menu.Item>
     </Menu>;
@@ -65,10 +67,14 @@ export default function ({user_info}) {
             <Space className={'app-header-auth-buttons'}>
                 <Button onClick={showInfoModal}><InfoCircleOutlined/></Button>
                 <Link to={'/register'}>
-                    <Button>Регистрация</Button>
+                    <Button>
+                        {lang.sign_up_link[locale]}
+                    </Button>
                 </Link>
                 <Link to={'/login'}>
-                    <Button>Войти</Button>
+                    <Button>
+                        {lang.sign_in_link[locale]}
+                    </Button>
                 </Link>
             </Space>
         </div>}
