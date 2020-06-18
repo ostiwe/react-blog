@@ -126,7 +126,15 @@ const lang = {
     back: {
         ru: 'Назад',
         en: 'Back'
-    }
+    },
+    comment_create_success: {
+        ru: 'Комментарий успешно создан',
+        en: 'Comment created successfully'
+    },
+    comment_create_error: {
+        ru: 'Не получилось создать комментарий',
+        en: 'Could not create comment'
+    },
 
 }
 export default lang;

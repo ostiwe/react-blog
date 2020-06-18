@@ -25,6 +25,11 @@ class BlogApi {
             formData, [['Content-type', 'application/json']])
     }
 
+    logout() {
+        return this.sendRequest('/auth/logout', HttpMethods.post,
+            {}, [['Content-type', 'application/json'], ['Token', `${this.accessToken}`]])
+    }
+
     getPosts(page: number, params: object = {}) {
         return this.sendRequest('/posts', HttpMethods.get,
             {page: page, ...params}, [['Content-type', 'application/json']])

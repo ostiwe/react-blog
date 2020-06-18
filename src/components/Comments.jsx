@@ -87,13 +87,14 @@ class Comments extends Component {
 
     onSubmit = () => {
         const {editorState, postId} = this.state;
+        const {locale} = this.props;
         this.setState({comment_sending: true});
         let comment = draftToMarkdown(convertToRaw(editorState.getCurrentContent()));
         this.apiBlog.createComment(postId, comment).then(response => {
             if (response.success) {
-                message.success("Комментарий успешно создан")
+                message.success(lang.comment_create_success[locale])
             } else {
-                message.error("Не получилось создать комментарий")
+                message.error(lang.comment_create_error[locale])
             }
 
             this.setState({comment_sending: false, editorState: EditorState.createEmpty()});
