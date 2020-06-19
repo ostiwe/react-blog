@@ -14,7 +14,7 @@
     "draftjs-to-markdown": "^0.6.0",
     "faker": "^4.1.0",
     "lodash": "^4.17.15",
-    "moment": "^2.25.3",
+    "moment": "^2.27.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-draft-wysiwyg": "^1.14.5",
