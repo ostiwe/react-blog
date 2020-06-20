@@ -1,13 +1,28 @@
 import {notification} from "antd";
+import lang from "./lang";
+import camelcaseKeys from "camelcase-keys";
+import snakecaseKeys from "snakecase-keys";
 
 enum HttpMethods {'get' = 'GET', 'post' = 'POST', 'put' = 'PUT'}
+
+enum Lang {'ru' = 'ru', 'en' = 'en'}
 
 class BlogApi {
     private readonly host: string;
     private accessToken: string | undefined;
+    private lang: Lang = Lang.ru;
 
     constructor(host: string) {
         this.host = host;
+    }
+
+    setLang(lang: Lang) {
+        this.lang = lang;
+        return this;
+    }
+
+    getLangList() {
+        return Lang;
     }
 
     setAccessToken(accessToken: string) {
@@ -66,7 +81,7 @@ class BlogApi {
     }
 
     createComment(postID: number, content: string) {
-        return this.sendRequest(`/comments/${postID}`, HttpMethods.post, {
+        return this.sendRequest(`/comments/${postID}`, HttpMethods.put, {
             text: content,
         }, [['Content-type', 'application/json'], ['Token', `${this.accessToken}`]])
     }
@@ -88,6 +103,14 @@ class BlogApi {
         return pairs.join('&');
     }
 
+    static convertObjectKeysToUpperCase(object: object): object {
+        return camelcaseKeys(object, {deep: true});
+    }
+
+    static convertObjectKeysToSnakeCase(object: object): object {
+        return snakecaseKeys(object, {deep: true});
+    }
+
     sendRequest(url: string, method: HttpMethods, data: object = {}, headers?: Array<[string, string]>) {
         return new Promise((resolve, reject) => {
             let xr = new XMLHttpRequest();
@@ -96,13 +119,15 @@ class BlogApi {
                 xr.open(method, this.host + url + `?${query}`)
             } else xr.open(method, this.host + url)
 
-            xr.onload = function () {
-                resolve(JSON.parse(xr.response))
+            xr.onload = () => {
+                const jsonResponse = JSON.parse(xr.response);
+                const convertedObject = BlogApi.convertObjectKeysToUpperCase(jsonResponse);
+                resolve(convertedObject)
             }
-            xr.onerror = function () {
+            xr.onerror = () => {
                 notification.error({
-                    message: "Ошибка сети",
-                    description: "В данный момент невозможно выполнить запрашиваемую операцию, повторите попытку позже."
+                    message: lang.xr_error[this.lang].message,
+                    description: lang.xr_error[this.lang].description
                 });
                 reject(xr.response)
             }
@@ -111,7 +136,8 @@ class BlogApi {
             }
 
             if (method !== "GET") {
-                xr.send(JSON.stringify(data));
+                const requestData = BlogApi.convertObjectKeysToSnakeCase(data);
+                xr.send(JSON.stringify(requestData));
             } else xr.send();
 
         })

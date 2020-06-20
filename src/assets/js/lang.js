@@ -135,6 +135,16 @@ const lang = {
         ru: 'Не получилось создать комментарий',
         en: 'Could not create comment'
     },
+    xr_error: {
+        ru: {
+            message: "Ошибка сети",
+            description: "В данный момент невозможно выполнить запрашиваемую операцию, повторите попытку позже"
+        },
+        en: {
+            message: "Network error",
+            description: "The requested operation cannot be completed at this time, please try again later"
+        }
+    }
 
 }
 export default lang;
