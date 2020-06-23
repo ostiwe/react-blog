@@ -86,17 +86,18 @@ class Register extends React.Component {
         if (mergedData.sex === null) mergedData.sex = sex;
         this.setState({ formData: mergedData });
         this.apiBlog.register(mergedData)
-          .then((value) => {
-            if (value.success) {
-              notification.success({
-                message: 'Успешная регистрация',
-                description: 'Теперь для завершения регистрации выполните вход',
-              });
-              history.push('/login');
-            }
+          .then(() => {
+            notification.success({
+              message: 'Успешная регистрация',
+              description: 'Теперь для завершения регистрации выполните вход',
+            });
+            history.push('/login');
           });
       })
-      .catch(() => {
+      .catch((reason) => {
+        notification.error({
+          message: reason.message,
+        });
       });
   }
 

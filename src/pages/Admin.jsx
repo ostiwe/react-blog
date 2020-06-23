@@ -37,7 +37,7 @@ class Admin extends React.Component {
     if (token) {
       this.apiBlog
         .setAccessToken(token)
-        .getUserInfo()
+        .getUserSelfInfo()
         .then((info) => {
           if (info.success) {
             if (!(parseInt(info.data.userInfo.mask, 10) & 16)) {

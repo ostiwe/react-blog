@@ -11,12 +11,13 @@ import apiBlog from '../../assets/js/BlogApiSettings';
 import lang from '../../assets/js/lang';
 
 const { Content } = Layout;
+const runType = process.env.NODE_ENV;
 
 class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      robotCheck: false,
+      robotCheck: runType === 'development',
     };
     this.formRef = React.createRef();
     this.blogApi = apiBlog;
@@ -28,20 +29,16 @@ class Login extends React.Component {
     const fieldData = this.formRef.current.getFieldsValue();
     this.blogApi.login(fieldData)
       .then((data) => {
-        if (data.success) {
-          dispatch(setUserInfo(data.data.user_info));
-          dispatch(setLocale(data.data.user_info.locale));
-          localStorage.setItem('access_token', data.data.access_token.value);
-          history.push('/');
-          return;
-        }
-        if (!data.success) {
-          notification.error({
-            message: data.message,
-          });
-        }
+        dispatch(setUserInfo(data.data.userInfo));
+        dispatch(setLocale(data.data.userInfo.locale));
+        localStorage.setItem('access_token', data.data.accessToken.value);
+        history.push('/');
       })
-      .catch(null);
+      .catch((response) => {
+        notification.error({
+          message: response.message,
+        });
+      });
     // this.props.dispatch(emulateLogin(this.formRef.current.getFieldValue('login')))
   }
 
@@ -61,13 +58,15 @@ class Login extends React.Component {
                 <Form.Item name="password" label={lang.login_password[locale]}>
                   <Input.Password/>
                 </Form.Item>
-                <Form.Item label={lang.captcha[locale]}>
-                  <Reaptcha
-                    sitekey="6LdEz_QUAAAAAJ1K93ruihvsy0QtWTP98lWYBPW4"
-                    onVerify={() => this.setState({ robotCheck: true })}
-                    onExpire={() => this.setState({ robotCheck: false })}
-                  />
-                </Form.Item>
+                {runType !== 'development' && (
+                  <Form.Item label={lang.captcha[locale]}>
+                    <Reaptcha
+                      sitekey="6LdEz_QUAAAAAJ1K93ruihvsy0QtWTP98lWYBPW4"
+                      onVerify={() => this.setState({ robotCheck: true })}
+                      onExpire={() => this.setState({ robotCheck: false })}
+                    />
+                  </Form.Item>
+                )}
                 <Form.Item>
                   <Button
                     onClick={this.login}

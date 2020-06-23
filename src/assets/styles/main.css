@@ -150,6 +150,11 @@ pre {
   border: 1px solid #F1F1F1;
 }
 
+.user-profile__avatar {
+  cursor: pointer;
+}
+
+/* KEYFRAMES*/
 @keyframes showCards {
   from {
     transform: scale(0);

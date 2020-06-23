@@ -21,23 +21,29 @@ function AppHeaderDropdown({ userInfo, locale }) {
   const menu = userInfo && (
     <Menu>
       <Menu.Item key="1">
-        <Link to="/profile">
-          <UserOutlined/>
-          {lang.profile_link[locale]}
+        <Link to={`/user/${userInfo.id}`}>
+          <Space>
+            <UserOutlined/>
+            {lang.profile_link[locale]}
+          </Space>
         </Link>
       </Menu.Item>
       {userInfo.mask ? (userInfo.mask & 16)
         && (
           <Menu.Item key="2">
             <Link to="/admin">
-              <DashboardOutlined/>
-              {lang.admin_panel_link[locale]}
+              <Space>
+                <DashboardOutlined/>
+                {lang.admin_panel_link[locale]}
+              </Space>
             </Link>
           </Menu.Item>
         ) : null}
       <Menu.Item key="3" onClick={logOut}>
-        <LogoutOutlined/>
-        {lang.logout_link[locale]}
+        <Space>
+          <LogoutOutlined/>
+          {lang.logout_link[locale]}
+        </Space>
       </Menu.Item>
     </Menu>
   );

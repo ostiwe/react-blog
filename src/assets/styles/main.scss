@@ -217,6 +217,14 @@ pre {
   }
 }
 
+.user-profile {
+  &__avatar {
+    cursor: pointer;
+  }
+}
+
+/* KEYFRAMES*/
+
 @keyframes showCards {
   from {
     transform: scale(0);

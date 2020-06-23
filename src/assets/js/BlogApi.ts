@@ -59,9 +59,13 @@ class BlogApi {
         return this.sendRequest('/tags', HttpMethods.get)
     }
 
-    getUserInfo() {
+    getUserSelfInfo() {
         return this.sendRequest('/auth/info', HttpMethods.post,
             {access_token: this.accessToken}, [['Content-type', 'application/json']])
+    }
+
+    getUserById(userId: number) {
+        return this.sendRequest(`/users/${userId}`, HttpMethods.get)
     }
 
     getPostById(postId: number) {
@@ -81,7 +85,7 @@ class BlogApi {
     }
 
     createComment(postID: number, content: string) {
-        return this.sendRequest(`/comments/${postID}`, HttpMethods.put, {
+        return this.sendRequest(`/comments/${postID}`, HttpMethods.post, {
             text: content,
         }, [['Content-type', 'application/json'], ['Token', `${this.accessToken}`]])
     }
@@ -122,6 +126,9 @@ class BlogApi {
             xr.onload = () => {
                 const jsonResponse = JSON.parse(xr.response);
                 const convertedObject = BlogApi.convertObjectKeysToUpperCase(jsonResponse);
+                if (Object.keys(convertedObject).includes('error')) {
+                    reject(convertedObject)
+                }
                 resolve(convertedObject)
             }
             xr.onerror = () => {

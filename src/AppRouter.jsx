@@ -8,7 +8,7 @@ import {
 import HomeOutlined from '@ant-design/icons/lib/icons/HomeOutlined';
 import PropTypes from 'prop-types';
 import {
-  Admin, CategoryPage, Login, MainPage, PostPage, Register,
+  Admin, CategoryPage, Login, MainPage, PostPage, Register, UserProfile,
 } from './pages';
 import { AppFooter, AppHeader } from './components';
 import apiBlog from './assets/js/BlogApiSettings';
@@ -31,6 +31,10 @@ const appRoutes = [
   {
     path: '/post/:id',
     component: PostPage,
+  },
+  {
+    path: '/user/:user',
+    component: UserProfile,
   },
 
   {
@@ -74,37 +78,37 @@ class AppRouter extends React.Component {
 
     if (userInfo === null && hasAccessToken) {
       this.apiBlog.setAccessToken(accessToken);
-      this.apiBlog.getUserInfo()
+      this.apiBlog.getUserSelfInfo()
         .then((response) => {
-          if (!response.success && !isAuthPage) {
+          const host = 'ws://127.0.0.1:9909';
+          const token = response.data.accessToken.value;
+
+          this.ws = new Websocket(host, token);
+          this.ws.setOnMessage((ev) => this.notificationHandler(ev));
+          this.ws.setOnSocketError((ev) => this.wsError(ev));
+
+          const dispatchUserInfo = {
+            ...response.data.userInfo,
+            accessToken: token,
+          };
+          const userLocale = response.data.userInfo.locale.toLowerCase();
+
+          if (userLocale === 'ru') {
+            this.apiBlog.setLang(this.apiBlog.getLangList().ru);
+          } else {
+            this.apiBlog.setLang(this.apiBlog.getLangList().en);
+          }
+          dispatch(setUserInfo(dispatchUserInfo));
+          dispatch(setLocale(userLocale));
+          this.forceUpdate();
+        })
+        .catch(() => {
+          if (!isAuthPage) {
             notification.warn({
               key: 'auth_expired',
               message: lang.auth_expire[locale],
               btn: <Button onClick={goAuth}>{lang.auth_expire_try_btn[locale]}</Button>,
             });
-          }
-          if (response.success) {
-            const host = 'ws://127.0.0.1:9909';
-            const token = response.data.accessToken.value;
-
-            this.ws = new Websocket(host, token);
-            this.ws.setOnMessage((ev) => this.notificationHandler(ev));
-            this.ws.setOnSocketError((ev) => this.wsError(ev));
-
-            const dispatchUserInfo = {
-              ...response.data.userInfo,
-              accessToken: token,
-            };
-            const userLocale = response.data.userInfo.locale.toLowerCase();
-
-            if (userLocale === 'ru') {
-              this.apiBlog.setLang(this.apiBlog.getLangList().ru);
-            } else {
-              this.apiBlog.setLang(this.apiBlog.getLangList().en);
-            }
-            dispatch(setUserInfo(dispatchUserInfo));
-            dispatch(setLocale(userLocale));
-            this.forceUpdate();
           }
         });
     }

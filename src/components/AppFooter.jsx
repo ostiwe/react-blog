@@ -10,7 +10,7 @@ const { Footer } = Layout;
 
 function AppFooter({ locale, dispatch }) {
   const menu = (
-    <Menu selectedKeys={[locale]}>
+    <Menu className="locale_changer_menu" selectedKeys={[locale]}>
       <Menu.Item key="ru" onClick={() => dispatch(setLocale('ru'))}>RU (Русский)</Menu.Item>
       <Menu.Item key="en" onClick={() => dispatch(setLocale('en'))}>EN (English)</Menu.Item>
     </Menu>
@@ -19,7 +19,7 @@ function AppFooter({ locale, dispatch }) {
     <Footer className="app-footer">
       <div className="app-footer-content">
         Footer app
-        <Dropdown overlay={menu}>
+        <Dropdown className="locale_changer" overlay={menu}>
           <Button><GlobalOutlined/></Button>
         </Dropdown>
       </div>

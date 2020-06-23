@@ -18,6 +18,7 @@ module.exports = {
     'react',
   ],
   ignorePatterns: [
+    '/cypress',
     '/src/assets',
     '/src/redux',
     '/src/react-app-env.d.ts',
