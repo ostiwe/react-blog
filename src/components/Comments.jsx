@@ -15,6 +15,7 @@ import ReactMarkdown from 'react-markdown';
 import htmlParser from 'react-markdown/plugins/html-parser';
 import ClockCircleOutlined from '@ant-design/icons/lib/icons/ClockCircleOutlined';
 import InfoCircleOutlined from '@ant-design/icons/lib/icons/InfoCircleOutlined';
+import QueueAnim from 'rc-queue-anim';
 import apiBlog from '../assets/js/BlogApiSettings';
 import lang from '../assets/js/lang';
 
@@ -61,18 +62,16 @@ class Comments extends Component {
     this.setState({ commentSending: true });
     const comment = draftToMarkdown(convertToRaw(editorState.getCurrentContent()));
     this.apiBlog.createComment(postId, comment)
-      .then((response) => {
-        if (response.success) {
-          message.success(lang.comment_create_success[locale]);
-        } else {
-          message.error(lang.comment_create_error[locale]);
-        }
-
+      .then(() => {
+        message.success(lang.comment_create_success[locale]);
         this.setState({
           commentSending: false,
           editorState: EditorState.createEmpty(),
         });
         this.getComments(postId, 'post');
+      })
+      .catch(() => {
+        message.error(lang.comment_create_error[locale]);
       });
   }
 
@@ -174,77 +173,83 @@ class Comments extends Component {
           renderItem={((item) => {
             if (item.deleted) {
               return (
-                <List.Item
-                  key={item.id}
-                  className="post-comment-item"
-                  extra={(userInfo && userInfo.id === item.creator.id)
-                    ? (
-                      <Tooltip
-                        placement="left"
-                        title={lang.deleted_post_msg[locale]}
-                      >
-                        <InfoCircleOutlined style={{ color: '#ff5555' }}/>
-                      </Tooltip>
-                    ) : null}
-                >
-                  <Comment content={lang.comment_deleted[locale]}/>
-                </List.Item>
+                <QueueAnim duration={700}>
+                  <List.Item
+                    key={item.id}
+                    className="post-comment-item"
+                    extra={(userInfo && userInfo.id === item.creator.id)
+                      ? (
+                        <Tooltip
+                          placement="left"
+                          title={lang.deleted_post_msg[locale]}
+                        >
+                          <InfoCircleOutlined style={{ color: '#ff5555' }}/>
+                        </Tooltip>
+                      ) : null}
+                  >
+                    <Comment content={lang.comment_deleted[locale]}/>
+                  </List.Item>
+                </QueueAnim>
               );
             }
             if (item.moderated) {
               return (
-                <List.Item key={item.id} className="post-comment-item">
-                  <Comment
-                    author={item.creator.login}
-                    datetime={moment(parseInt(item.createdAt, 10) * 1000)
-                      .locale(locale === 'ru' ? 'ru' : 'en')
-                      .calendar()}
-                    avatar={
-                      <Avatar>{item.creator.login[0].toUpperCase()}</Avatar>
-                    }
-                    content={(
-                      <div>
-                        <ReactMarkdown
-                          escapeHtml={false}
-                          astPlugins={[parseHtml]}
-                          source={item.text}
-                        />
-                      </div>
-                    )}
-                  />
-                </List.Item>
+                <QueueAnim duration={700}>
+                  <List.Item key={item.id} className="post-comment-item">
+                    <Comment
+                      author={item.creator.login}
+                      datetime={moment(parseInt(item.createdAt, 10) * 1000)
+                        .locale(locale === 'ru' ? 'ru' : 'en')
+                        .calendar()}
+                      avatar={
+                        <Avatar>{item.creator.login[0].toUpperCase()}</Avatar>
+                      }
+                      content={(
+                        <div>
+                          <ReactMarkdown
+                            escapeHtml={false}
+                            astPlugins={[parseHtml]}
+                            source={item.text}
+                          />
+                        </div>
+                      )}
+                    />
+                  </List.Item>
+                </QueueAnim>
               );
             }
             if (!item.moderated && (userInfo && userInfo.id === item.creator.id)) {
               return (
-                <List.Item
-                  extra={(
-                    <Tooltip placement="left" title={lang.moderated_post_msg[locale]}>
-                      <ClockCircleOutlined style={{ color: '#ffba55' }}/>
-                    </Tooltip>
-                  )}
-                  key={item.id}
-                  className="post-comment-item post-comment-item__moderate"
-                >
-                  <Comment
-                    author={item.creator.login}
-                    datetime={moment(parseInt(item.createdAt, 10) * 1000)
-                      .locale(locale === 'ru' ? 'ru' : 'en')
-                      .calendar()}
-                    avatar={
-                      <Avatar>{item.creator.login[0].toUpperCase()}</Avatar>
-                    }
-                    content={(
-                      <div>
-                        <ReactMarkdown
-                          escapeHtml={false}
-                          astPlugins={[parseHtml]}
-                          source={item.text}
-                        />
-                      </div>
+                <QueueAnim duration={700}>
+                  <List.Item
+                    extra={(
+                      <Tooltip placement="left" title={lang.moderated_post_msg[locale]}>
+                        <ClockCircleOutlined style={{ color: '#ffba55' }}/>
+                      </Tooltip>
                     )}
-                  />
-                </List.Item>
+                    key={item.id}
+                    className="post-comment-item post-comment-item__moderate"
+                  >
+                    <Comment
+                      author={item.creator.login}
+                      datetime={moment(parseInt(item.createdAt, 10) * 1000)
+                        .locale(locale === 'ru' ? 'ru' : 'en')
+                        .calendar()}
+                      avatar={
+                        <Avatar>{item.creator.login[0].toUpperCase()}</Avatar>
+                      }
+                      content={(
+                        <div>
+                          <ReactMarkdown
+                            escapeHtml={false}
+                            astPlugins={[parseHtml]}
+                            source={item.text}
+                          />
+                        </div>
+                      )}
+                    />
+                  </List.Item>
+                </QueueAnim>
               );
             }
             return null;

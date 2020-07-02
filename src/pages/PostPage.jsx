@@ -29,15 +29,14 @@ class PostPage extends Component {
 
     this.apiBlog.getPostById(postId)
       .then((response) => {
-        if (response.success === false) {
-          this.setState({
-            notFound: true,
-            load: false,
-          });
-          return;
-        }
         this.setState({
           post: response,
+          load: false,
+        });
+      })
+      .catch(() => {
+        this.setState({
+          notFound: true,
           load: false,
         });
       });
