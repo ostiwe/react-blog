@@ -5,6 +5,7 @@ import {
 import { SearchOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import QueueAnim from 'rc-queue-anim';
 
 import moment from 'moment';
 import 'moment/min/locales';
@@ -27,9 +28,9 @@ function RenderColumnItems({
       <p>{lang.categories[locale]}</p>
       {tags.map((tag) => {
         if (locale === 'ru') {
-          return <Tag key={tag.id}>{tag.ruName ?? tag.name}</Tag>;
+          return <QueueAnim type="bottom" key={tag.id}><Tag>{tag.ruName ?? tag.name}</Tag></QueueAnim>;
         }
-        return <Tag key={tag.id}>{tag.name}</Tag>;
+        return <QueueAnim type="bottom" key={tag.id}><Tag>{tag.name}</Tag></QueueAnim>;
       })}
     </Form>
   );
@@ -43,51 +44,59 @@ function RenderColumnItems({
       <Row gutter={[48, 16]}>
         <Col xl={19} lg={19} md={17} sm={48} xs={48} style={{ width: '100%' }}>
           {items.map((item) => (
-            <Card
-              className="app-main-card"
-              title={(
-                <Space className="app-main-card-meta__top">
-                  <Avatar
-                    size="small"
-                    shape="circle"
-                  >
-                    {item.creator.login[0]}
-                  </Avatar>
-                  <span>
-                    Пост от
-                    {item.creator.login}
-                  </span>
-                </Space>
-              )}
+            <QueueAnim
               key={item.id}
-              extra={(
-                <Space className="app-main-card-meta__top">
-                  {moment(parseInt(item.published, 10) * 1000)
-                    .locale(locale === 'ru' ? 'ru' : 'en')
-                    .calendar()}
-                </Space>
-              )}
+              type="bottom"
+              duration={700}
             >
-              <Typography.Title level={3}>{item.title}</Typography.Title>
-              {item.description ?? `${item.content.substring(0, 200)}...`}
-              <Divider/>
-              <div className="app-main-card-footer">
-                <div className="app-main-card-footer__tags">
-                  {item.tags.map((tag) => {
-                    if (locale === 'ru') {
-                      return <Tag key={tag.id}>{tag.ruName ?? tag.name}</Tag>;
-                    }
-                    return <Tag key={tag.id}>{tag.name}</Tag>;
-                  })}
+              <Card
+                className="app-main-card"
+                title={(
+                  <Space className="app-main-card-meta__top">
+                    <Avatar
+                      size="small"
+                      shape="circle"
+                    >
+                      {item.creator.login[0].toUpperCase()}
+                    </Avatar>
+                    <span>
+                      <Space size={5}>
+                        <span>Пост от</span>
+                        <span>{item.creator.login}</span>
+                      </Space>
+                    </span>
+                  </Space>
+                )}
+                key={item.id}
+                extra={(
+                  <Space className="app-main-card-meta__top">
+                    {moment(parseInt(item.published, 10) * 1000)
+                      .locale(locale === 'ru' ? 'ru' : 'en')
+                      .calendar()}
+                  </Space>
+                )}
+              >
+                <Typography.Title level={3}>{item.title}</Typography.Title>
+                {item.description ?? `${item.content.substring(0, 200)}...`}
+                <Divider/>
+                <div className="app-main-card-footer">
+                  <div className="app-main-card-footer__tags">
+                    {item.tags.map((tag) => {
+                      if (locale === 'ru') {
+                        return <Tag key={tag.id}>{tag.ruName ?? tag.name}</Tag>;
+                      }
+                      return <Tag key={tag.id}>{tag.name}</Tag>;
+                    })}
+                  </div>
+                  <div className="app-main-card-footer__button">
+                    <Link to={`/post/${item.id}`}>{lang.post_show_full[locale]}</Link>
+                  </div>
                 </div>
-                <div className="app-main-card-footer__button">
-                  <Link to={`/post/${item.id}`}>{lang.post_show_full[locale]}</Link>
-                </div>
-              </div>
-              {/* <Card.Meta description={<div> */}
-              {/*    <Tag>{item.category}</Tag> */}
-              {/* </div>}/> */}
-            </Card>
+                {/* <Card.Meta description={<div> */}
+                {/*    <Tag>{item.category}</Tag> */}
+                {/* </div>}/> */}
+              </Card>
+            </QueueAnim>
           ))}
           <div className="load-more-button-place">
             {!postsEnd
