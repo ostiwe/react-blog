@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^4.1.0",
-    "antd": "^4.4.0",
+    "antd": "^4.4.1",
     "@antv/g2": "^4.0.12",
     "antd-img-crop": "^3.9.0",
     "camelcase-keys": "^6.2.2",
