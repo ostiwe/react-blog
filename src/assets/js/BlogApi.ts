@@ -3,9 +3,18 @@ import lang from "./lang";
 import camelcaseKeys from "camelcase-keys";
 import snakecaseKeys from "snakecase-keys";
 
-enum HttpMethods {'get' = 'GET', 'post' = 'POST', 'put' = 'PUT'}
+enum HttpMethods {'get' = 'GET', 'post' = 'POST', 'put' = 'PUT', 'delete' = 'DELETE'}
 
 enum Lang {'ru' = 'ru', 'en' = 'en'}
+
+interface Post {
+    title: string,
+    description: string | null,
+    content: string,
+    published: number,
+    publish_now: boolean | number,
+    tags: number[]
+}
 
 class BlogApi {
     private readonly host: string;
@@ -42,7 +51,7 @@ class BlogApi {
 
     logout() {
         return this.sendRequest('/auth/logout', HttpMethods.post,
-            {}, [['Content-type', 'application/json'], ['Token', `${this.accessToken}`]])
+            {}, [['Content-type', 'application/json']])
     }
 
     getPosts(page: number, params: object = {}) {
@@ -84,10 +93,22 @@ class BlogApi {
         return this.sendRequest('/posts/count', HttpMethods.get)
     }
 
+    getCommentsCount() {
+        return this.sendRequest('/comments/count', HttpMethods.get)
+    }
+
     createComment(postID: number, content: string) {
         return this.sendRequest(`/comments/${postID}`, HttpMethods.post, {
             text: content,
-        }, [['Content-type', 'application/json'], ['Token', `${this.accessToken}`]])
+        }, [['Content-type', 'application/json']])
+    }
+
+    createPost(postObject: Post) {
+        return this.sendRequest('/posts', HttpMethods.post, postObject, [['Content-type', 'application/json']])
+    }
+
+    deletePost(postID: number) {
+        return this.sendRequest(`/posts/${postID}`, HttpMethods.delete)
     }
 
     private serialiseObject(obj: any): string {
@@ -119,7 +140,7 @@ class BlogApi {
         return new Promise((resolve, reject) => {
             let xr = new XMLHttpRequest();
             if (method === HttpMethods.get && Object.keys(data).length > 0) {
-                let query = this.serialiseObject(data);
+                let query = this.serialiseObject(BlogApi.convertObjectKeysToSnakeCase(data));
                 xr.open(method, this.host + url + `?${query}`)
             } else xr.open(method, this.host + url)
 
@@ -142,7 +163,12 @@ class BlogApi {
                 headers.map(header => xr.setRequestHeader(header[0], header[1]));
             }
 
-            if (method !== "GET") {
+            if (this.accessToken) {
+                xr.setRequestHeader('Token', this.accessToken);
+            }
+
+
+            if (method !== HttpMethods.get) {
                 const requestData = BlogApi.convertObjectKeysToSnakeCase(data);
                 xr.send(JSON.stringify(requestData));
             } else xr.send();

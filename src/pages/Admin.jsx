@@ -39,16 +39,15 @@ class Admin extends React.Component {
         .setAccessToken(token)
         .getUserSelfInfo()
         .then((info) => {
-          if (info.success) {
-            if (!(parseInt(info.data.userInfo.mask, 10) & 16)) {
-              history.push('/');
-              return;
-            }
-            this.setState({
-              loading: false,
-            });
+          if (!(parseInt(info.data.userInfo.mask, 10) & 16)) {
+            history.push('/');
             return;
           }
+          this.setState({
+            loading: false,
+          });
+        })
+        .catch(() => {
           history.push('/');
         });
       return;
@@ -66,7 +65,6 @@ class Admin extends React.Component {
     } else {
       url = url.join('/');
     }
-
     this.setState({ selectedMenu: url });
   }
 

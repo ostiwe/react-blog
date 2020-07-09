@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
-  Avatar, Button, Divider, List, notification, Space, Tooltip,
+  Avatar, Button, Divider, Dropdown, List, Menu, message, notification, Space, Tooltip,
 } from 'antd';
 import MoreOutlined from '@ant-design/icons/lib/icons/MoreOutlined';
+import ClockCircleOutlined from '@ant-design/icons/lib/icons/ClockCircleOutlined';
+import { Link } from 'react-router-dom';
 
 import moment from 'moment';
 import apiBlog from '../../../assets/js/BlogApiSettings';
@@ -21,9 +23,13 @@ class AllPosts extends Component {
       hasMore: true,
     };
     this.apiBlog = apiBlog;
+    this.getPosts = this.getPosts.bind(this);
+    this.deletePost = this.deletePost.bind(this);
   }
 
   componentDidMount() {
+    this.apiBlog = this.apiBlog
+      .setAccessToken(localStorage.getItem('access_token'));
     this.getPosts();
   }
 
@@ -32,11 +38,13 @@ class AllPosts extends Component {
     const { page, items } = this.state;
     const posts = items;
     this.apiBlog
-      .setAccessToken(localStorage.getItem('access_token'))
-      .getPosts(page)
+      .getPosts(page, { showAll: true })
       .then((response) => {
         if (response.items.length === 0) {
-          this.setState({ hasMore: false });
+          this.setState({
+            hasMore: false,
+            load: false,
+          });
           return;
         }
         response.items.map((post) => posts.push(post));
@@ -53,10 +61,27 @@ class AllPosts extends Component {
       });
   }
 
+  deletePost(postID) {
+    this.apiBlog.deletePost(parseInt(postID, 10))
+      .then(() => {
+        message.success('Пост удален');
+      })
+      .catch(() => {
+        message.error('Пост не удален');
+      });
+  }
+
   render() {
     const {
       load, items, hasMore,
     } = this.state;
+
+    const menuItems = (postID) => (
+      <Menu>
+        <Menu.Item onClick={() => this.deletePost(postID)}>Удалить</Menu.Item>
+        <Menu.Item>Редактировать</Menu.Item>
+      </Menu>
+    );
     return (
       <div>
         <List
@@ -78,15 +103,23 @@ class AllPosts extends Component {
               key={item.id}
               extra={[
                 <Button.Group key={`btn_group_${item.id}`}>
-                  <Button><MoreOutlined/></Button>
-                  <Button><MoreOutlined/></Button>
+                  {parseInt(item.published, 10) > (Math.floor(+new Date() / 1000)) && (
+                    <Tooltip title="Данный пост еще не опубликован">
+                      <Button><ClockCircleOutlined/></Button>
+                    </Tooltip>
+                  )}
+                  <Dropdown overlay={() => menuItems(item.id)}>
+                    <Button>
+                      <MoreOutlined/>
+                    </Button>
+                  </Dropdown>
                 </Button.Group>,
               ]}
             >
               <List.Item.Meta
                 key={`meta_${item.id}`}
                 avatar={<Avatar>{item.creator.login[0].toUpperCase()}</Avatar>}
-                title={item.title}
+                title={<Link to={`/post/${item.id}`}>{item.title}</Link>}
                 description={(
                   <div>
                     <Space>

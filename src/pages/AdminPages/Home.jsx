@@ -11,9 +11,12 @@ class Home extends Component {
     this.state = {
       usersCount: 0,
       postsCount: 0,
+      commentsCount: 0,
 
       usersCountLoading: true,
       postsCountLoading: true,
+      commentsCountLoading: true,
+
     };
     this.apiBlog = apiBlog;
   }
@@ -29,11 +32,17 @@ class Home extends Component {
         postsCountLoading: false,
         postsCount: response.count,
       }));
+    this.apiBlog.getCommentsCount()
+      .then((response) => this.setState({
+        commentsCountLoading: false,
+        commentsCount: response.count,
+      }));
   }
 
   render() {
     const {
-      postsCount, usersCountLoading, postsCountLoading, usersCount,
+      postsCount, usersCountLoading, postsCountLoading,
+      usersCount, commentsCountLoading, commentsCount,
     } = this.state;
     return (
       <Layout>
@@ -41,13 +50,18 @@ class Home extends Component {
         <Divider style={{ margin: '10px 0' }}/>
         <Space>
           <Card style={{ minWidth: 200 }}>
-            <Skeleton active loading={usersCountLoading}>
+            <Skeleton active loading={postsCountLoading}>
               <Statistic title="Постов" value={postsCount}/>
             </Skeleton>
           </Card>
           <Card style={{ minWidth: 200 }}>
-            <Skeleton active loading={postsCountLoading}>
+            <Skeleton active loading={usersCountLoading}>
               <Statistic title="Пользователей" value={usersCount}/>
+            </Skeleton>
+          </Card>
+          <Card style={{ minWidth: 200 }}>
+            <Skeleton active loading={commentsCountLoading}>
+              <Statistic title="Комментариев" value={commentsCount}/>
             </Skeleton>
           </Card>
         </Space>

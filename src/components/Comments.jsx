@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
-  Avatar, Button, Comment, Divider, Empty, Form, List, message, Result, Tooltip,
+  Avatar, Comment, Divider, Empty, List, message, Result, Tooltip,
 } from 'antd';
 import moment from 'moment';
 import { convertToRaw, EditorState } from 'draft-js';
-import { Editor } from 'react-draft-wysiwyg';
 import draftToMarkdown from 'draftjs-to-markdown';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import LockOutlined from '@ant-design/icons/lib/icons/LockOutlined';
@@ -18,6 +17,7 @@ import InfoCircleOutlined from '@ant-design/icons/lib/icons/InfoCircleOutlined';
 import QueueAnim from 'rc-queue-anim';
 import apiBlog from '../assets/js/BlogApiSettings';
 import lang from '../assets/js/lang';
+import { ContentEditor } from './index';
 
 // dont work, lol
 const parseHtml = htmlParser({});
@@ -117,26 +117,13 @@ class Comments extends Component {
     const { userInfo, locale } = this.props;
 
     const commentEditor = (
-      <>
-        <Form.Item>
-          <Editor
-            editorClassName="comment-editor"
-            editorState={editorState}
-            onEditorStateChange={this.onChange}
-          />
-        </Form.Item>
-        <Form.Item>
-          <Button
-            htmlType="submit"
-            disabled={commentSending}
-            loading={commentSending}
-            onClick={this.onSubmit}
-            type="primary"
-          >
-            {lang.comments_add_button[locale]}
-          </Button>
-        </Form.Item>
-      </>
+      <ContentEditor
+        onSubmit={this.onSubmit}
+        commentSending={commentSending}
+        onChange={this.onChange}
+        editorState={editorState}
+        buttonText={lang.comments_add_button[locale]}
+      />
     );
 
     const viewerProps = {

@@ -4,15 +4,16 @@
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^4.1.0",
-    "antd": "^4.4.0",
-    "@antv/g2": "^4.0.12",
+    "@types/react": "^16.9.41",
+    "antd": "^4.4.1",
     "antd-img-crop": "^3.9.0",
     "camelcase-keys": "^6.2.2",
     "chart.js": "^2.9.3",
     "draft-js": "^0.11.6",
     "draftjs-to-markdown": "^0.6.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "moment": "^2.25.3",
+    "nprogress": "^0.2.0",
     "prop-types": "^15.7.2",
     "rc-queue-anim": "^1.8.5",
     "rc-tween-one": "^2.7.2",
@@ -52,15 +53,15 @@
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.0",
-    "@testing-library/react": "^10.4.3",
+    "@testing-library/react": "^10.4.5",
     "@testing-library/user-event": "^12.0.11",
     "eslint-config-airbnb": "^18.2.0",
-    "eslint-plugin-import": "^2.21.2",
+    "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-react": "^7.20.3",
-    "eslint-plugin-react-hooks": "^4.0.5",
+    "eslint-plugin-react-hooks": "^4.0.6",
     "faker": "^4.1.0",
-    "typescript": "^3.9.3"
+    "typescript": "^3.9.6"
   },
   "peerDependencies": {
     "eslint": "^7.2.0"
