@@ -5,8 +5,6 @@ import {
   Avatar, Comment, Divider, Empty, List, message, Result, Tooltip,
 } from 'antd';
 import moment from 'moment';
-import { convertToRaw, EditorState } from 'draft-js';
-import draftToMarkdown from 'draftjs-to-markdown';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import LockOutlined from '@ant-design/icons/lib/icons/LockOutlined';
 import Viewer from 'react-viewer';
@@ -15,7 +13,7 @@ import htmlParser from 'react-markdown/plugins/html-parser';
 import ClockCircleOutlined from '@ant-design/icons/lib/icons/ClockCircleOutlined';
 import InfoCircleOutlined from '@ant-design/icons/lib/icons/InfoCircleOutlined';
 import QueueAnim from 'rc-queue-anim';
-import apiBlog from '../assets/js/BlogApiSettings';
+import { apiBlog, APIHOST } from '../assets/js/BlogApiSettings';
 import lang from '../assets/js/lang';
 import { ContentEditor } from './index';
 
@@ -28,14 +26,13 @@ class Comments extends Component {
     this.state = {
       comments: [],
       loading: true,
-      editorState: EditorState.createEmpty(),
+      editorState: '',
       commentSending: false,
       postId: null,
       imageViewerVisible: false,
       imageSelected: [],
       moderatedComments: 0,
     };
-    this.apiBlog = apiBlog;
     this.updateCommentsIntervalId = null;
     this.onSubmit = this.onSubmit.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -60,13 +57,12 @@ class Comments extends Component {
     const { editorState, postId } = this.state;
     const { locale } = this.props;
     this.setState({ commentSending: true });
-    const comment = draftToMarkdown(convertToRaw(editorState.getCurrentContent()));
-    this.apiBlog.createComment(postId, comment)
+    apiBlog.createComment(postId, editorState)
       .then(() => {
         message.success(lang.comment_create_success[locale]);
         this.setState({
           commentSending: false,
-          editorState: EditorState.createEmpty(),
+          editorState: '',
         });
         this.getComments(postId, 'post');
       })
@@ -81,7 +77,7 @@ class Comments extends Component {
 
   getComments(postId, type) {
     if (type === 'post') {
-      this.apiBlog.getComments(postId)
+      apiBlog.getComments(postId)
         .then((response) => {
           if (!response.success && response.success !== false) {
             let count = 0;
@@ -155,9 +151,36 @@ class Comments extends Component {
 
         <List
           header={lang.comments[locale]}
+          className="comments-list"
           itemLayout="horizontal"
           dataSource={comments}
           renderItem={((item) => {
+            const commentItem = (
+              <Comment
+                author={item.creator.login}
+                datetime={moment(parseInt(item.createdAt, 10) * 1000)
+                  .locale(locale === 'ru' ? 'ru' : 'en')
+                  .calendar()}
+                avatar={(
+                  <Avatar
+                    className="img-reset"
+                    src={`${APIHOST}/avatar/${item.creator.avatar}`}
+                  >
+                    {item.creator.login[0].toUpperCase()}
+                  </Avatar>
+                )}
+                content={(
+                  <div>
+                    <ReactMarkdown
+                      escapeHtml={false}
+                      astPlugins={[parseHtml]}
+                      source={item.text}
+                    />
+                  </div>
+                )}
+              />
+            );
+
             if (item.deleted) {
               return (
                 <QueueAnim duration={700}>
@@ -183,24 +206,7 @@ class Comments extends Component {
               return (
                 <QueueAnim duration={700}>
                   <List.Item key={item.id} className="post-comment-item">
-                    <Comment
-                      author={item.creator.login}
-                      datetime={moment(parseInt(item.createdAt, 10) * 1000)
-                        .locale(locale === 'ru' ? 'ru' : 'en')
-                        .calendar()}
-                      avatar={
-                        <Avatar>{item.creator.login[0].toUpperCase()}</Avatar>
-                      }
-                      content={(
-                        <div>
-                          <ReactMarkdown
-                            escapeHtml={false}
-                            astPlugins={[parseHtml]}
-                            source={item.text}
-                          />
-                        </div>
-                      )}
-                    />
+                    {commentItem}
                   </List.Item>
                 </QueueAnim>
               );
@@ -217,24 +223,7 @@ class Comments extends Component {
                     key={item.id}
                     className="post-comment-item post-comment-item__moderate"
                   >
-                    <Comment
-                      author={item.creator.login}
-                      datetime={moment(parseInt(item.createdAt, 10) * 1000)
-                        .locale(locale === 'ru' ? 'ru' : 'en')
-                        .calendar()}
-                      avatar={
-                        <Avatar>{item.creator.login[0].toUpperCase()}</Avatar>
-                      }
-                      content={(
-                        <div>
-                          <ReactMarkdown
-                            escapeHtml={false}
-                            astPlugins={[parseHtml]}
-                            source={item.text}
-                          />
-                        </div>
-                      )}
-                    />
+                    {commentItem}
                   </List.Item>
                 </QueueAnim>
               );
@@ -251,7 +240,13 @@ class Comments extends Component {
           ? (
             <Comment
               className="post-comment-editor"
-              avatar={<Avatar>{userInfo && userInfo.login[0].toUpperCase()}</Avatar>}
+              avatar={(
+                <Avatar
+                  src={`${APIHOST}/avatar/${userInfo.avatar}`}
+                >
+                  {userInfo && userInfo.login[0].toUpperCase()}
+                </Avatar>
+              )}
               content={commentEditor}
             />
           )

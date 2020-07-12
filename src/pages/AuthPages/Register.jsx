@@ -7,7 +7,7 @@ import QuestionCircleOutlined from '@ant-design/icons/lib/icons/QuestionCircleOu
 import Reaptcha from 'reaptcha';
 import { withRouter } from 'react-router-dom';
 import { AppFooter, AppHeader } from '../../components';
-import apiBlog from '../../assets/js/BlogApiSettings';
+import { apiBlog } from '../../assets/js/BlogApiSettings';
 
 const lodash = require('lodash/fp/object');
 
@@ -28,7 +28,6 @@ class Register extends React.Component {
       robotCheck: false,
     };
     this.formRef = React.createRef();
-    this.apiBlog = apiBlog;
 
     this.nextStep = this.nextStep.bind(this);
     this.prevStep = this.prevStep.bind(this);
@@ -85,7 +84,7 @@ class Register extends React.Component {
           .map((key) => mergedData[key] === undefined && (mergedData[key] = null));
         if (mergedData.sex === null) mergedData.sex = sex;
         this.setState({ formData: mergedData });
-        this.apiBlog.register(mergedData)
+        apiBlog.register(mergedData)
           .then(() => {
             notification.success({
               message: 'Успешная регистрация',

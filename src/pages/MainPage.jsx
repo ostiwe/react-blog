@@ -5,7 +5,7 @@ import { BackTop, Layout } from 'antd';
 import { withRouter } from 'react-router-dom';
 import { changeSearchInput } from '../redux/actions/mainActions';
 import { AppFooter, AppHeader, RenderColumnItems } from '../components';
-import apiBlog from '../assets/js/BlogApiSettings';
+import { apiBlog } from '../assets/js/BlogApiSettings';
 
 const { Content } = Layout;
 
@@ -21,7 +21,6 @@ class MainPage extends React.Component {
       loading: false,
       postsEnd: false,
     };
-    this.apiBlog = apiBlog;
 
     this.searchOnPage = this.searchOnPage.bind(this);
     this.getTags = this.getTags.bind(this);
@@ -34,7 +33,7 @@ class MainPage extends React.Component {
   }
 
   getTags() {
-    this.apiBlog.getTags()
+    apiBlog.getTags()
       .then((tags) => {
         if (tags.items) {
           this.setState({ tags: tags.items });
@@ -46,7 +45,7 @@ class MainPage extends React.Component {
     this.setState({ loading: true });
     const { page, data } = this.state;
     let posts = [];
-    this.apiBlog.getPosts(page)
+    apiBlog.getPosts(page)
       .then((items) => {
         if (items.items.length === 0) {
           this.setState({ postsEnd: true });
@@ -134,7 +133,7 @@ const defProps = {
   }),
   match: PropTypes.shape({
     isExact: PropTypes.bool,
-    params: PropTypes.object,
+    params: PropTypes.instanceOf(Object),
     path: PropTypes.string,
     url: PropTypes.string,
   }),

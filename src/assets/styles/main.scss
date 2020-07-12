@@ -162,6 +162,10 @@ pre {
     padding: 16px 24px;
     background: white;
 
+    & img {
+      width: 50%;
+    }
+
     &-body {
       padding: 0 0 16px;
     }
@@ -210,6 +214,25 @@ pre {
 }
 
 .comment {
+  &s {
+    &-list {
+      blockquote {
+        margin-left: 15px;
+        padding: 0 1em;
+        color: #6a737d;
+        border-left: .25em solid #dfe2e5;
+      }
+
+      ul, ol {
+        text-decoration: none;
+
+        & > li {
+          margin-left: 15px;
+        }
+      }
+    }
+  }
+
   &-editor {
     padding: 0 16px;
     border: 1px solid #F1F1F1;
@@ -219,6 +242,29 @@ pre {
 .user-profile {
   &__avatar {
     cursor: pointer;
+
+    &-no-action {
+      cursor: unset;
+    }
+  }
+}
+
+.list {
+  &-item {
+    background-color: white;
+    padding: 20px;
+  }
+}
+
+.img {
+  &-reset img {
+    width: unset;
+  }
+}
+
+.popover {
+  &-no-padding > .ant-popover-content > .ant-popover-inner > .ant-popover-inner-content {
+    padding: 0;
   }
 }
 

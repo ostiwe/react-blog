@@ -1,18 +1,22 @@
 import React from 'react';
 import { Button, Form } from 'antd';
-import { Editor } from 'react-draft-wysiwyg';
 import PropTypes from 'prop-types';
 import { EditorState } from 'draft-js';
+import SimpleMDE from 'react-simplemde-editor';
+import 'easymde/dist/easymde.min.css';
 
 const ContentEditor = ({
   editorState, commentSending, onSubmit, onChange, buttonText,
 }) => (
   <>
     <Form.Item>
-      <Editor
-        editorClassName="comment-editor"
-        editorState={editorState}
-        onEditorStateChange={onChange}
+      <SimpleMDE
+        id="markdown-editor"
+        onChange={onChange}
+        value={editorState}
+        options={{
+          spellChecker: false,
+        }}
       />
     </Form.Item>
     <Form.Item>

@@ -1,5 +1,7 @@
-import BlogApi from "./BlogApi";
+import BlogApi from './BlogApi';
 
-let apiBlog = new BlogApi("http://api.symf.loc");
+const APIHOST = 'http://api.symf.loc';
 
-export default apiBlog;
+let apiBlog = new BlogApi(APIHOST);
+
+export { apiBlog, APIHOST };

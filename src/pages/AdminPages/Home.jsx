@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import {
   Card, Divider, Layout, List, PageHeader, Skeleton, Space, Statistic,
 } from 'antd';
-import apiBlog from '../../assets/js/BlogApiSettings';
+import { apiBlog } from '../../assets/js/BlogApiSettings';
 
 class Home extends Component {
   constructor(props) {
@@ -18,25 +18,28 @@ class Home extends Component {
       commentsCountLoading: true,
 
     };
-    this.apiBlog = apiBlog;
   }
 
   componentDidMount() {
-    this.apiBlog.getUsersCount()
+    apiBlog.getUsersCount()
       .then((response) => this.setState({
         usersCountLoading: false,
         usersCount: response.count,
       }));
-    this.apiBlog.getPostsCount()
+    apiBlog.getPostsCount()
       .then((response) => this.setState({
         postsCountLoading: false,
         postsCount: response.count,
       }));
-    this.apiBlog.getCommentsCount()
+    apiBlog.getCommentsCount()
       .then((response) => this.setState({
         commentsCountLoading: false,
         commentsCount: response.count,
       }));
+  }
+
+  componentWillUnmount() {
+    apiBlog.cancelAllRequests();
   }
 
   render() {

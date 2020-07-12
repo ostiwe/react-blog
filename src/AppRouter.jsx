@@ -11,7 +11,7 @@ import {
   Admin, CategoryPage, Login, MainPage, PostPage, Register, UserProfile,
 } from './pages';
 import { AppFooter, AppHeader } from './components';
-import apiBlog from './assets/js/BlogApiSettings';
+import { apiBlog } from './assets/js/BlogApiSettings';
 import { setLocale, setUserInfo } from './redux/actions/mainActions';
 import Websocket from './assets/js/websocket.ts';
 import lang from './assets/js/lang';
@@ -56,7 +56,6 @@ class AppRouter extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
-    this.apiBlog = apiBlog;
     this.ws = null;
 
     this.notificationHandler = this.notificationHandler.bind(this);
@@ -77,8 +76,8 @@ class AppRouter extends React.Component {
     };
 
     if (userInfo === null && hasAccessToken) {
-      this.apiBlog.setAccessToken(accessToken);
-      this.apiBlog.getUserSelfInfo()
+      apiBlog.setAccessToken(accessToken);
+      apiBlog.getUserSelfInfo()
         .then((response) => {
           const host = 'ws://127.0.0.1:9909';
           const token = response.data.accessToken.value;
@@ -94,9 +93,9 @@ class AppRouter extends React.Component {
           const userLocale = response.data.userInfo.locale.toLowerCase();
 
           if (userLocale === 'ru') {
-            this.apiBlog.setLang(this.apiBlog.getLangList().ru);
+            apiBlog.setLang(apiBlog.getLangList().ru);
           } else {
-            this.apiBlog.setLang(this.apiBlog.getLangList().en);
+            apiBlog.setLang(apiBlog.getLangList().en);
           }
           dispatch(setUserInfo(dispatchUserInfo));
           dispatch(setLocale(userLocale));
@@ -123,7 +122,7 @@ class AppRouter extends React.Component {
         btn: () => (
           <Button.Group>
             <Button onClick={() => {
-              this.apiBlog.setLang(this.apiBlog.getLangList().en);
+              apiBlog.setLang(apiBlog.getLangList().en);
               dispatch(setLocale('en'));
               notification.close('change_lang');
             }}

@@ -7,8 +7,12 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import EyeOutlined from '@ant-design/icons/lib/icons/EyeOutlined';
 import { connect } from 'react-redux';
+import ReactMarkdown from 'react-markdown';
+import htmlParser from 'react-markdown/plugins/html-parser';
 import { Comments } from './index';
+import { APIHOST } from '../assets/js/BlogApiSettings';
 
+const parseHtml = htmlParser({});
 const { Content } = Layout;
 const Post = ({ post, locale }) => (
   <Layout>
@@ -20,13 +24,23 @@ const Post = ({ post, locale }) => (
         .calendar()}
       footer={(
         <Space style={{ marginBottom: 16 }}>
-          <Avatar>{post.creator.login[0].toUpperCase()}</Avatar>
+          <Avatar
+            src={`${APIHOST}/avatar/${post.creator.avatar}`}
+          >
+            {post.creator.login[0].toUpperCase()}
+          </Avatar>
           {post.creator.login}
         </Space>
       )}
     />
     <Content className="post-content">
-      <div className="post-content-body">{post.content}</div>
+      <div className="post-content-body">
+        <ReactMarkdown
+          source={post.content}
+          escapeHtml={false}
+          astPlugins={[parseHtml]}
+        />
+      </div>
       <div className="post-content-footer">
         <Space>
           {post.tags.map((tag) => {
@@ -60,6 +74,7 @@ Post.propTypes = {
     creator: PropTypes.shape({
       id: PropTypes.number,
       login: PropTypes.string,
+      avatar: PropTypes.string,
     }),
     tags: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.number,

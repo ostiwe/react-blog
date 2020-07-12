@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { AppFooter, AppHeader } from '../../components';
 import { setLocale, setUserInfo } from '../../redux/actions/mainActions';
-import apiBlog from '../../assets/js/BlogApiSettings';
+import { apiBlog } from '../../assets/js/BlogApiSettings';
 import lang from '../../assets/js/lang';
 
 const { Content } = Layout;
@@ -20,14 +20,13 @@ class Login extends React.Component {
       robotCheck: runType === 'development',
     };
     this.formRef = React.createRef();
-    this.blogApi = apiBlog;
     this.login = this.login.bind(this);
   }
 
   login() {
     const { dispatch, history } = this.props;
     const fieldData = this.formRef.current.getFieldsValue();
-    this.blogApi.login(fieldData)
+    apiBlog.login(fieldData)
       .then((data) => {
         dispatch(setUserInfo(data.data.userInfo));
         dispatch(setLocale(data.data.userInfo.locale));

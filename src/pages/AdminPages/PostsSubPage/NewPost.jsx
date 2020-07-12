@@ -5,19 +5,17 @@ import {
   DatePicker,
   Form,
   Input,
+  message,
+  notification,
+  Select,
   Space,
   Switch,
-  Select,
-  notification,
-  message,
 } from 'antd';
-import { convertToRaw, EditorState } from 'draft-js';
 import moment from 'moment';
 import 'moment/locale/ru';
 import ruRU from 'antd/es/locale/ru_RU';
-import draftToMarkdown from 'draftjs-to-markdown';
 import { ContentEditor } from '../../../components';
-import apiBlog from '../../../assets/js/BlogApiSettings';
+import { apiBlog } from '../../../assets/js/BlogApiSettings';
 
 const { Option } = Select;
 
@@ -35,7 +33,7 @@ class NewPost extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      editorState: EditorState.createEmpty(),
+      editorState: '',
       post: {
         tags: [],
         publishTime: 0,
@@ -43,8 +41,9 @@ class NewPost extends Component {
       },
       allTags: [],
       momentTime: null,
+      contentValidateStatus: '',
+      contentValidateMessage: null,
     };
-    this.apiBlog = apiBlog;
     this.formRef = React.createRef();
     this.toggleSwitch = this.toggleSwitch.bind(this);
     this.getTags = this.getTags.bind(this);
@@ -59,8 +58,13 @@ class NewPost extends Component {
     this.getTags();
   }
 
+  componentWillUnmount() {
+    this.formRef = null;
+    apiBlog.cancelAllRequests();
+  }
+
   getTags() {
-    this.apiBlog.getTags()
+    apiBlog.getTags()
       .then((tags) => {
         if (tags.items) {
           this.setState({ allTags: tags.items });
@@ -127,47 +131,60 @@ class NewPost extends Component {
         tags: tagsId,
       },
     });
-    console.log(tagsId);
   }
 
   submitPost() {
     const { editorState, post } = this.state;
     this.formRef.current.validateFields()
       .then((value) => {
-        const submittedPost = {
-          title: value.post_title,
-          description: value.post_description,
-          published: post.publishTime,
-          publish_now: post.publishNow,
-          content: draftToMarkdown(convertToRaw(editorState.getCurrentContent())),
-          tags: post.tags,
-        };
-        this.apiBlog.createPost(submittedPost)
-          .then(() => {
-            message.success('Пост успешно создан');
-            this.formRef.current.resetFields();
-            this.setState({
-              editorState: EditorState.createEmpty(),
-              momentTime: null,
-              post: {
-                tags: [],
-                publishTime: 0,
-                publishNow: false,
-              },
-            });
-          })
-          .catch((reason) => {
-            notification.error({
-              description: reason.message,
-              message: `Error #${reason.code}`,
-            });
+        if (editorState.length >= 100) {
+          this.setState({
+            contentValidateStatus: '',
+            contentValidateMessage: null,
           });
+
+          const submittedPost = {
+            title: value.post_title,
+            description: value.post_description,
+            published: post.publishTime,
+            publish_now: post.publishNow,
+            content: editorState,
+            tags: post.tags,
+          };
+          apiBlog.createPost(submittedPost)
+            .then(() => {
+              message.success('Пост успешно создан');
+              this.formRef.current.resetFields();
+              this.setState({
+                editorState: '',
+                momentTime: null,
+                post: {
+                  tags: [],
+                  publishTime: 0,
+                  publishNow: false,
+                },
+              });
+            })
+            .catch((reason) => {
+              notification.error({
+                description: reason.message,
+                message: `Error #${reason.code}`,
+              });
+            });
+          return;
+        }
+
+        this.setState({
+          contentValidateStatus: 'error',
+          contentValidateMessage: `Необходимо как минимум 100 символов, осталось ${100 - editorState.length}`,
+        });
       });
   }
 
   render() {
     const {
-      editorState, post, allTags, momentTime,
+      editorState, post, allTags, momentTime, contentValidateStatus,
+      contentValidateMessage,
     } = this.state;
     return (
       <div>
@@ -240,19 +257,8 @@ class NewPost extends Component {
                 label="Контент"
                 required
                 name="post_content"
-                rules={[{
-                  min: 100,
-                  required: true,
-                  message: 'Контент поста должен содержать не менее 100 символов',
-                  validator: (rule) => {
-                    const content = editorState.getCurrentContent()
-                      .getPlainText('-');
-                    if (content.length < rule.min) {
-                      return Promise.reject(rule.message);
-                    }
-                    return Promise.resolve();
-                  },
-                }]}
+                validateStatus={contentValidateStatus}
+                help={contentValidateMessage}
               >
                 <ContentEditor
                   onSubmit={this.submitPost}

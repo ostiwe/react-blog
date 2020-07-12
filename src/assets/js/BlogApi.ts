@@ -16,22 +16,30 @@ interface Post {
     tags: number[]
 }
 
+interface Tag {
+    name: string,
+    ru_name: string
+}
+
+interface RequestItem {
+    id: string,
+    item: XMLHttpRequest
+}
+
 class BlogApi {
+    protected accessToken: string | undefined;
     private readonly host: string;
-    private accessToken: string | undefined;
     private lang: Lang = Lang.ru;
+    private requestsList: RequestItem[];
 
     constructor(host: string) {
         this.host = host;
+        this.requestsList = [];
     }
 
     setLang(lang: Lang) {
         this.lang = lang;
         return this;
-    }
-
-    getLangList() {
-        return Lang;
     }
 
     setAccessToken(accessToken: string) {
@@ -54,6 +62,10 @@ class BlogApi {
             {}, [['Content-type', 'application/json']])
     }
 
+    getLangList() {
+        return Lang;
+    }
+
     getPosts(page: number, params: object = {}) {
         return this.sendRequest('/posts', HttpMethods.get,
             {page: page, ...params}, [['Content-type', 'application/json']])
@@ -66,6 +78,10 @@ class BlogApi {
 
     getTags() {
         return this.sendRequest('/tags', HttpMethods.get)
+    }
+
+    getTagsStats() {
+        return this.sendRequest('/tags/stats', HttpMethods.get)
     }
 
     getUserSelfInfo() {
@@ -97,6 +113,10 @@ class BlogApi {
         return this.sendRequest('/comments/count', HttpMethods.get)
     }
 
+    getUsers(page: number, query: Object) {
+        return this.sendRequest('/users', HttpMethods.get, {page: page, ...query})
+    }
+
     createComment(postID: number, content: string) {
         return this.sendRequest(`/comments/${postID}`, HttpMethods.post, {
             text: content,
@@ -105,6 +125,10 @@ class BlogApi {
 
     createPost(postObject: Post) {
         return this.sendRequest('/posts', HttpMethods.post, postObject, [['Content-type', 'application/json']])
+    }
+
+    createTag(tagObject: Tag) {
+        return this.sendRequest('/tags', HttpMethods.post, tagObject, [['Content-type', 'application/json']])
     }
 
     deletePost(postID: number) {
@@ -136,9 +160,32 @@ class BlogApi {
         return snakecaseKeys(object, {deep: true});
     }
 
+    private static makeid() {
+        let result = '';
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const charactersLength = characters.length;
+        for (let i = 0; i < 30; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+    }
+
+    cancelAllRequests() {
+        this.requestsList.map(request => {
+            request.item.abort();
+        })
+        this.requestsList = [];
+    }
+
+    removeRequest(id: string) {
+        this.requestsList = this.requestsList.filter(item => item.id !== id);
+    }
+
     sendRequest(url: string, method: HttpMethods, data: object = {}, headers?: Array<[string, string]>) {
         return new Promise((resolve, reject) => {
             let xr = new XMLHttpRequest();
+            const xrID = BlogApi.makeid();
+            this.requestsList.push({id: xrID, item: xr})
             if (method === HttpMethods.get && Object.keys(data).length > 0) {
                 let query = this.serialiseObject(BlogApi.convertObjectKeysToSnakeCase(data));
                 xr.open(method, this.host + url + `?${query}`)
@@ -148,8 +195,10 @@ class BlogApi {
                 const jsonResponse = JSON.parse(xr.response);
                 const convertedObject = BlogApi.convertObjectKeysToUpperCase(jsonResponse);
                 if (Object.keys(convertedObject).includes('error')) {
+                    this.removeRequest(xrID);
                     reject(convertedObject)
                 }
+                this.removeRequest(xrID);
                 resolve(convertedObject)
             }
             xr.onerror = () => {
@@ -157,6 +206,7 @@ class BlogApi {
                     message: lang.xr_error[this.lang].message,
                     description: lang.xr_error[this.lang].description
                 });
+                this.removeRequest(xrID);
                 reject(xr.response)
             }
             if (headers?.length) {

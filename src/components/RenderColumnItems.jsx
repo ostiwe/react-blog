@@ -11,10 +11,11 @@ import moment from 'moment';
 import 'moment/min/locales';
 import PropTypes from 'prop-types';
 import lang from '../assets/js/lang';
+import { UserPopover } from './index';
 
 function RenderColumnItems({
   items, searchInput, tags, loading,
-  loadData, searchOnPage, postsEnd, locale,
+  loadData, searchOnPage, postsEnd, locale, onSelectCategory,
 }) {
   const sidebarForm = (
     <Form>
@@ -26,12 +27,24 @@ function RenderColumnItems({
       />
       <Divider type="horizontal"/>
       <p>{lang.categories[locale]}</p>
-      {tags.map((tag) => {
-        if (locale === 'ru') {
-          return <QueueAnim type="bottom" key={tag.id}><Tag>{tag.ruName ?? tag.name}</Tag></QueueAnim>;
-        }
-        return <QueueAnim type="bottom" key={tag.id}><Tag>{tag.name}</Tag></QueueAnim>;
-      })}
+      <QueueAnim
+        type="bottom"
+      >
+        {tags.map((tag) => {
+          if (locale === 'ru') {
+            return (
+              <Tag onClick={onSelectCategory}>
+                <Link to={`/tag/${tag.id}`}>{tag.ruName ?? tag.name}</Link>
+              </Tag>
+            );
+          }
+          return (
+            <Tag onClick={onSelectCategory}>
+              <Link to={`/tag/${tag.id}`}>{tag.name}</Link>
+            </Tag>
+          );
+        })}
+      </QueueAnim>
     </Form>
   );
   return (
@@ -56,14 +69,19 @@ function RenderColumnItems({
                     <Avatar
                       size="small"
                       shape="circle"
+                      src={`http://api.symf.loc/avatar/${item.creator.avatar}`}
                     >
                       {item.creator.login[0].toUpperCase()}
                     </Avatar>
                     <span>
-                      <Space size={5}>
-                        <span>Пост от</span>
-                        <span>{item.creator.login}</span>
-                      </Space>
+                      <UserPopover user={item.creator}>
+                        <Link to={`/user/${item.creator.id}`}>
+                          <Space size={5}>
+                            <span>Пост от</span>
+                            <span>{item.creator.login}</span>
+                          </Space>
+                        </Link>
+                      </UserPopover>
                     </span>
                   </Space>
                 )}
@@ -128,6 +146,8 @@ RenderColumnItems.defaultProps = {
   searchInput: '',
   loading: false,
   postsEnd: false,
+  onSelectCategory: () => {
+  },
 };
 
 RenderColumnItems.propTypes = {
@@ -157,6 +177,7 @@ RenderColumnItems.propTypes = {
   loadData: PropTypes.func.isRequired,
   searchOnPage: PropTypes.func.isRequired,
   postsEnd: PropTypes.bool,
+  onSelectCategory: PropTypes.func,
 };
 
 export default connect(stateToProps)(RenderColumnItems);

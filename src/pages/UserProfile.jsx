@@ -6,7 +6,7 @@ import ImgCrop from 'antd-img-crop';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import apiBlog from '../assets/js/BlogApiSettings';
+import { apiBlog, APIHOST } from '../assets/js/BlogApiSettings';
 import lang from '../assets/js/lang';
 import { AppFooter, AppHeader } from '../components';
 
@@ -18,7 +18,6 @@ class UserProfile extends PureComponent {
     this.state = {
       loadedUserInfo: null,
     };
-    this.apiBlog = apiBlog;
     this.getUserData = this.getUserData.bind(this);
   }
 
@@ -28,7 +27,7 @@ class UserProfile extends PureComponent {
 
   getUserData() {
     const { match } = this.props;
-    this.apiBlog.getUserById(match.params.user)
+    apiBlog.getUserById(match.params.user)
       .then((response) => {
         this.setState({ loadedUserInfo: response });
       });
@@ -41,7 +40,7 @@ class UserProfile extends PureComponent {
     const uploadSettings = {
       accept: '.jpg,.png,.jpeg',
       method: 'POST',
-      action: 'https://api.symfony.loc/file',
+      action: 'http://api.symf.loc/file',
       previewFile: () => {
       },
       showUploadList: false,
@@ -65,14 +64,9 @@ class UserProfile extends PureComponent {
           headers={{ Token: userInfo && userInfo.accessToken }}
         >
           <Tooltip placement="bottom" title={lang.change_avatar[locale]}>
-            {loadedUserInfo && loadedUserInfo.avatar ? (
+            {loadedUserInfo && (
               <Avatar
-                src={`https://api.symfony.loc/avatar/${loadedUserInfo && loadedUserInfo.avatar}`}
-                className="user-profile__avatar"
-                size={150}
-              />
-            ) : (
-              <Avatar
+                src={`${APIHOST}/avatar/${loadedUserInfo && loadedUserInfo.avatar}`}
                 className="user-profile__avatar"
                 size={150}
               />
@@ -91,8 +85,8 @@ class UserProfile extends PureComponent {
                 <Space direction="vertical" align="center">
                   {(userInfo && userInfo.id) === loadedUserInfo.id ? uploader : (
                     <Avatar
-                      src={`https://api.symfony.loc/avatar/${loadedUserInfo.avatar}`}
-                      className="user-profile__avatar"
+                      src={`${APIHOST}/avatar/${loadedUserInfo.avatar}`}
+                      className="user-profile__avatar user-profile__avatar-no-action"
                       size={150}
                     />
                   )}

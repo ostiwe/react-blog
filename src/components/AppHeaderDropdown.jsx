@@ -8,7 +8,7 @@ import {
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import lang from '../assets/js/lang';
-import apiBlog from '../assets/js/BlogApiSettings';
+import { apiBlog } from '../assets/js/BlogApiSettings';
 
 function logOut() {
   localStorage.clear();

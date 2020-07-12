@@ -3,7 +3,7 @@ import { BackTop, Layout, PageHeader } from 'antd';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { AppFooter, AppHeader, RenderColumnItems } from '../components';
-import apiBlog from '../assets/js/BlogApiSettings';
+import { apiBlog } from '../assets/js/BlogApiSettings';
 
 const { Content } = Layout;
 
@@ -20,7 +20,6 @@ class CategoryPage extends React.Component {
       loading: false,
       postsEnd: false,
     };
-    this.apiBlog = apiBlog;
 
     this.onSelectCategory = this.onSelectCategory.bind(this);
     this.getPosts = this.getPosts.bind(this);
@@ -29,24 +28,23 @@ class CategoryPage extends React.Component {
 
   componentDidMount() {
     const { match } = this.props;
-    const { tags } = this.state;
     this.getTags()
       .then(() => {
+        const { tags } = this.state;
         const tag = tags.filter((item) => item.id === parseInt(match.params.tag, 10));
         this.setState({ currentTag: tag[0] });
       });
-
     this.getPosts(match.params.tag);
   }
 
   onSelectCategory() {
     const { tags } = this.state;
-    const { match } = this.props;
     this.forceUpdate(() => {
       this.setState({
         page: 1,
         data: [],
       }, () => {
+        const { match } = this.props;
         const tag = tags.filter((item) => item.id === parseInt(match.params.tag, 10));
         this.setState({ currentTag: tag[0] });
         this.getPosts(match.params.tag);
@@ -66,7 +64,7 @@ class CategoryPage extends React.Component {
       tag = currentTag.id;
     }
 
-    this.apiBlog.getPostsByCategory(tag, page)
+    apiBlog.getPostsByCategory(tag, page)
       .then((items) => {
         if (items.items.length === 0) {
           this.setState({ postsEnd: true });
@@ -85,11 +83,10 @@ class CategoryPage extends React.Component {
 
   getTags() {
     return new Promise((resolve) => {
-      this.apiBlog.getTags()
+      apiBlog.getTags()
         .then((tags) => {
           if (tags.items) {
-            this.setState({ tags: tags.items });
-            resolve();
+            this.setState({ tags: tags.items }, resolve);
           }
         });
     });
@@ -107,7 +104,14 @@ class CategoryPage extends React.Component {
       <Layout>
         <AppHeader/>
         <Content className="app-content">
-          <PageHeader title={`<div>Поиск по тегу ${tag}</div>`}/>
+          <PageHeader title={(
+            <div>
+              Поиск по тегу
+              {' '}
+              {tag}
+            </div>
+          )}
+          />
           <BackTop/>
           <RenderColumnItems
             onSelectCategory={this.onSelectCategory}

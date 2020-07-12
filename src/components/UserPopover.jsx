@@ -1,25 +1,35 @@
 import React from 'react';
 import {
-  Avatar, List, Popover, Space,
+  Card, Descriptions, Popover,
 } from 'antd';
 import PropTypes from 'prop-types';
+import { APIHOST } from '../assets/js/BlogApiSettings';
 
 function UserPopover(props) {
   const { user, children } = props;
   return (
-    <Popover content={(
-      <Space>
-        <div>
-          <Avatar>{user.login[0].toUpperCase()}</Avatar>
-          {user.login}
-        </div>
-        <List size="small">
-          <List.Item>as</List.Item>
-          <List.Item>ass</List.Item>
-          <List.Item>a2</List.Item>
-        </List>
-      </Space>
-    )}
+    <Popover
+      overlayClassName="popover-no-padding"
+      content={(
+        <Card
+          style={{ width: 250 }}
+          cover={<img alt="us" src={`${APIHOST}/avatar/${user.avatar}`}/>}
+        >
+          <Card.Meta
+            title={user.login}
+            description={(
+              <Descriptions size="small" column={1}>
+                <Descriptions.Item label="Постов">
+                  {user.posts}
+                </Descriptions.Item>
+                <Descriptions.Item label="Комментариев">
+                  {user.comments}
+                </Descriptions.Item>
+              </Descriptions>
+            )}
+          />
+        </Card>
+      )}
     >
       {children}
     </Popover>
@@ -30,6 +40,9 @@ UserPopover.propTypes = {
   user: PropTypes.shape({
     id: PropTypes.number,
     login: PropTypes.string,
+    avatar: PropTypes.string,
+    posts: PropTypes.number,
+    comments: PropTypes.number,
   }).isRequired,
   children: PropTypes.node.isRequired,
 };

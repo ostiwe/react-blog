@@ -115,6 +115,9 @@ pre {
   padding: 16px 24px;
   background: white;
 }
+.post-content img {
+  width: 50%;
+}
 .post-content-body {
   padding: 0 0 16px;
 }
@@ -144,6 +147,18 @@ pre {
   padding: 0 16px;
 }
 
+.comments-list blockquote {
+  margin-left: 15px;
+  padding: 0 1em;
+  color: #6a737d;
+  border-left: 0.25em solid #dfe2e5;
+}
+.comments-list ul, .comments-list ol {
+  text-decoration: none;
+}
+.comments-list ul > li, .comments-list ol > li {
+  margin-left: 15px;
+}
 .comment-editor {
   padding: 0 16px;
   border: 1px solid #F1F1F1;
@@ -151,6 +166,22 @@ pre {
 
 .user-profile__avatar {
   cursor: pointer;
+}
+.user-profile__avatar-no-action {
+  cursor: unset;
+}
+
+.list-item {
+  background-color: white;
+  padding: 20px;
+}
+
+.img-reset img {
+  width: unset;
+}
+
+.popover-no-padding > .ant-popover-content > .ant-popover-inner > .ant-popover-inner-content {
+  padding: 0;
 }
 
 /* KEYFRAMES*/

@@ -6,7 +6,7 @@ import FrownOutlined from '@ant-design/icons/lib/icons/FrownOutlined';
 import ArrowLeftOutlined from '@ant-design/icons/lib/icons/ArrowLeftOutlined';
 import LoadingOutlined from '@ant-design/icons/lib/icons/LoadingOutlined';
 import { AppFooter, AppHeader, Post } from '../components';
-import apiBlog from '../assets/js/BlogApiSettings';
+import { apiBlog } from '../assets/js/BlogApiSettings';
 import lang from '../assets/js/lang';
 
 const { Content } = Layout;
@@ -19,7 +19,6 @@ class PostPage extends Component {
       notFound: false,
       load: true,
     };
-    this.apiBlog = apiBlog;
   }
 
   componentDidMount() {
@@ -27,7 +26,7 @@ class PostPage extends Component {
 
     const postId = match.params.id;
 
-    this.apiBlog.getPostById(postId)
+    apiBlog.getPostById(postId)
       .then((response) => {
         this.setState({
           post: response,

@@ -8,7 +8,7 @@ import ClockCircleOutlined from '@ant-design/icons/lib/icons/ClockCircleOutlined
 import { Link } from 'react-router-dom';
 
 import moment from 'moment';
-import apiBlog from '../../../assets/js/BlogApiSettings';
+import { apiBlog } from '../../../assets/js/BlogApiSettings';
 import 'moment/min/locales';
 
 import { UserPopover } from '../../../components';
@@ -22,22 +22,23 @@ class AllPosts extends Component {
       load: true,
       hasMore: true,
     };
-    this.apiBlog = apiBlog;
     this.getPosts = this.getPosts.bind(this);
     this.deletePost = this.deletePost.bind(this);
   }
 
   componentDidMount() {
-    this.apiBlog = this.apiBlog
-      .setAccessToken(localStorage.getItem('access_token'));
     this.getPosts();
+  }
+
+  componentWillUnmount() {
+    apiBlog.cancelAllRequests();
   }
 
   getPosts() {
     this.setState({ load: true });
     const { page, items } = this.state;
     const posts = items;
-    this.apiBlog
+    apiBlog
       .getPosts(page, { showAll: true })
       .then((response) => {
         if (response.items.length === 0) {
@@ -62,7 +63,7 @@ class AllPosts extends Component {
   }
 
   deletePost(postID) {
-    this.apiBlog.deletePost(parseInt(postID, 10))
+    apiBlog.deletePost(parseInt(postID, 10))
       .then(() => {
         message.success('Пост удален');
       })

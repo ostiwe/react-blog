@@ -7,8 +7,10 @@ import {
   Col, Divider, Layout, Menu, Row, Spin,
 } from 'antd';
 import { AppFooter, AppHeader } from '../components';
-import apiBlog from '../assets/js/BlogApiSettings';
-import { Home, Posts } from './AdminPages';
+import { apiBlog } from '../assets/js/BlogApiSettings';
+import {
+  Home, Posts, Tags, Users,
+} from './AdminPages';
 
 const { Content } = Layout;
 
@@ -19,7 +21,6 @@ class Admin extends React.Component {
       loading: true,
       selectedMenu: '/admin',
     };
-    this.apiBlog = apiBlog;
 
     this.getUserData = this.getUserData.bind(this);
     this.selectMenuItemByUrl = this.selectMenuItemByUrl.bind(this);
@@ -35,7 +36,7 @@ class Admin extends React.Component {
     const { history } = this.props;
     const token = localStorage.getItem('access_token');
     if (token) {
-      this.apiBlog
+      apiBlog
         .setAccessToken(token)
         .getUserSelfInfo()
         .then((info) => {
@@ -86,7 +87,11 @@ class Admin extends React.Component {
       },
       {
         path: '/admin/users',
-        component: () => <>Users Admin Page</>,
+        component: Users,
+      },
+      {
+        path: '/admin/tags',
+        component: Tags,
       },
     ];
     return (
@@ -111,6 +116,11 @@ class Admin extends React.Component {
                     <Menu.Item key="/admin/users">
                       <Link to="/admin/users">
                         Пользователи
+                      </Link>
+                    </Menu.Item>
+                    <Menu.Item key="/admin/tags">
+                      <Link to="/admin/tags">
+                        Теги
                       </Link>
                     </Menu.Item>
                   </Menu>
