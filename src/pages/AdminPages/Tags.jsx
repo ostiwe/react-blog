@@ -5,6 +5,7 @@ import {
 } from 'antd';
 import InfoCircleOutlined from '@ant-design/icons/lib/icons/InfoCircleOutlined';
 import { apiBlog } from '../../assets/js/BlogApiSettings';
+import DeleteOutlined from '@ant-design/icons/lib/icons/DeleteOutlined';
 
 function mapStateToProps(state) {
   return state;
@@ -21,6 +22,7 @@ class Tags extends Component {
     this.getTags = this.getTags.bind(this);
     this.toggleDrawer = this.toggleDrawer.bind(this);
     this.createTag = this.createTag.bind(this);
+    this.removeTag = this.removeTag.bind(this);
   }
 
   componentDidMount() {
@@ -61,6 +63,10 @@ class Tags extends Component {
             message.error(`Error #${reason.code}. ${reason.message}`);
           });
       });
+  }
+
+  removeTag(tag) {
+    console.log(tag, 1);
   }
 
   render() {
@@ -152,7 +158,11 @@ class Tags extends Component {
         <List
           dataSource={allTags}
           renderItem={(item) => (
-            <List.Item className="list-item" key={item.id}>
+            <List.Item
+              className="list-item"
+              key={item.id}
+              extra={[<Button onClick={() => this.removeTag(item)} icon={<DeleteOutlined/>}/>]}
+            >
               <span style={{ marginRight: 20 }}>
                 #
                 {item.id}

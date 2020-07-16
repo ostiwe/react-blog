@@ -1,5 +1,5 @@
 import React from 'react';
-import { BackTop, Layout, PageHeader } from 'antd';
+import { BackTop, Divider, Layout, PageHeader, Spin } from 'antd';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { AppFooter, AppHeader, RenderColumnItems } from '../components';
@@ -53,7 +53,10 @@ class CategoryPage extends React.Component {
   }
 
   getPosts(postTag) {
-    this.setState({ loading: true });
+    this.setState({
+      loading: true,
+      postsEnd: false,
+    });
     const { page, data, currentTag } = this.state;
     let tag;
     let posts = [];
