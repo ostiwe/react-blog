@@ -153,37 +153,38 @@ class Comments extends Component {
           header={lang.comments[locale]}
           className="comments-list"
           itemLayout="horizontal"
-          dataSource={comments}
-          renderItem={((item) => {
-            const commentItem = (
-              <Comment
-                author={item.creator.login}
-                datetime={moment(parseInt(item.createdAt, 10) * 1000)
-                  .locale(locale === 'ru' ? 'ru' : 'en')
-                  .calendar()}
-                avatar={(
-                  <Avatar
-                    className="img-reset"
-                    src={`${APIHOST}/avatar/${item.creator.avatar}`}
-                  >
-                    {item.creator.login[0].toUpperCase()}
-                  </Avatar>
-                )}
-                content={(
-                  <div>
-                    <ReactMarkdown
-                      escapeHtml={false}
-                      astPlugins={[parseHtml]}
-                      source={item.text}
-                    />
-                  </div>
-                )}
-              />
-            );
+          loading={loading}
+        >
+          <QueueAnim>
+            {comments.length > 0 && comments.map((item) => {
+              const commentItem = (
+                <Comment
+                  author={item.creator.login}
+                  datetime={moment(parseInt(item.createdAt, 10) * 1000)
+                    .locale(locale === 'ru' ? 'ru' : 'en')
+                    .calendar()}
+                  avatar={(
+                    <Avatar
+                      className="img-reset"
+                      src={`${APIHOST}/avatar/${item.creator.avatar}`}
+                    >
+                      {item.creator.login[0].toUpperCase()}
+                    </Avatar>
+                  )}
+                  content={(
+                    <div>
+                      <ReactMarkdown
+                        escapeHtml={false}
+                        astPlugins={[parseHtml]}
+                        source={item.text}
+                      />
+                    </div>
+                  )}
+                />
+              );
 
-            if (item.deleted) {
-              return (
-                <QueueAnim duration={700}>
+              if (item.deleted) {
+                return (
                   <List.Item
                     key={item.id}
                     className="post-comment-item"
@@ -199,21 +200,17 @@ class Comments extends Component {
                   >
                     <Comment content={lang.comment_deleted[locale]}/>
                   </List.Item>
-                </QueueAnim>
-              );
-            }
-            if (item.moderated) {
-              return (
-                <QueueAnim duration={700}>
+                );
+              }
+              if (item.moderated) {
+                return (
                   <List.Item key={item.id} className="post-comment-item">
                     {commentItem}
                   </List.Item>
-                </QueueAnim>
-              );
-            }
-            if (!item.moderated && (userInfo && userInfo.id === item.creator.id)) {
-              return (
-                <QueueAnim duration={700}>
+                );
+              }
+              if (!item.moderated && (userInfo && userInfo.id === item.creator.id)) {
+                return (
                   <List.Item
                     extra={(
                       <Tooltip placement="left" title={lang.moderated_post_msg[locale]}>
@@ -225,13 +222,11 @@ class Comments extends Component {
                   >
                     {commentItem}
                   </List.Item>
-                </QueueAnim>
-              );
-            }
-            return null;
-          })}
-          loading={loading}
-        >
+                );
+              }
+              return null;
+            })}
+          </QueueAnim>
           {((comments.length === 0 || moderatedComments === 0) && !loading)
           && <Empty description={lang.comments_empty[locale]}/>}
         </List>

@@ -16,6 +16,7 @@ const ContentEditor = ({
         value={editorState}
         options={{
           spellChecker: false,
+          showIcons: ['code', 'table'],
         }}
       />
     </Form.Item>
@@ -34,7 +35,7 @@ const ContentEditor = ({
 );
 
 ContentEditor.propTypes = {
-  editorState: PropTypes.instanceOf(EditorState).isRequired,
+  editorState: PropTypes.string.isRequired,
   commentSending: PropTypes.bool.isRequired,
   onSubmit: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,

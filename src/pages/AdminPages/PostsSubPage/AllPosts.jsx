@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
-  Avatar, Button, Divider, Dropdown, List, Menu, message, notification, Space, Tooltip,
+  Avatar, Button, Divider, Dropdown, List, Menu, message, Modal, notification, Space, Tooltip,
 } from 'antd';
 import MoreOutlined from '@ant-design/icons/lib/icons/MoreOutlined';
 import ClockCircleOutlined from '@ant-design/icons/lib/icons/ClockCircleOutlined';
@@ -63,13 +63,48 @@ class AllPosts extends Component {
   }
 
   deletePost(postID) {
-    apiBlog.deletePost(parseInt(postID, 10))
-      .then(() => {
-        message.success('Пост удален');
-      })
-      .catch(() => {
-        message.error('Пост не удален');
+    const modal = Modal.confirm();
+    modal.update({
+      centered: true,
+      onOk: () => {
+        apiBlog.deletePost(parseInt(postID, 10))
+          .then(() => {
+            modal.destroy();
+            message.success('Пост удален');
+            const { items } = this.state;
+            this.setState({ items: items.filter((item) => item.id !== postID) });
+          })
+          .catch(() => {
+            modal.destroy();
+            message.error('Пост не удален');
+          });
+      },
+      okText: 'Да, удалить',
+      cancelText: 'Отменить',
+      autoFocusButton: null,
+      okButtonProps: {
+        type: 'danger',
+        autoFocus: false,
+        disabled: true,
+      },
+      title: 'Подтвердите удаление',
+      content: (
+        <div>
+          Вы действительно хотите удалить данный пост? При удалении, все комментарии будут удалены.
+          <b> Резльтат необратим.</b>
+        </div>
+      ),
+      onCancel: modal.destroy,
+    });
+    setTimeout(() => {
+      modal.update({
+        okButtonProps: {
+          type: 'danger',
+          autoFocus: false,
+          disabled: false,
+        },
       });
+    }, 2000);
   }
 
   render() {

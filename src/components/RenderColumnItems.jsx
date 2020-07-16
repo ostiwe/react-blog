@@ -27,19 +27,17 @@ function RenderColumnItems({
       />
       <Divider type="horizontal"/>
       <p>{lang.categories[locale]}</p>
-      <QueueAnim
-        type="bottom"
-      >
+      <QueueAnim>
         {tags.map((tag) => {
           if (locale === 'ru') {
             return (
-              <Tag onClick={onSelectCategory}>
+              <Tag key={`tag_${tag.id}`} onClick={onSelectCategory}>
                 <Link to={`/tag/${tag.id}`}>{tag.ruName ?? tag.name}</Link>
               </Tag>
             );
           }
           return (
-            <Tag onClick={onSelectCategory}>
+            <Tag key={`tag_${tag.id}`} onClick={onSelectCategory}>
               <Link to={`/tag/${tag.id}`}>{tag.name}</Link>
             </Tag>
           );
@@ -95,7 +93,7 @@ function RenderColumnItems({
                 )}
               >
                 <Typography.Title level={3}>{item.title}</Typography.Title>
-                {item.description ?? `${item.content.substring(0, 200)}...`}
+                {item.description}
                 <Divider/>
                 <div className="app-main-card-footer">
                   <div className="app-main-card-footer__tags">

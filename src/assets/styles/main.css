@@ -8,14 +8,33 @@ body {
   padding: 0 !important;
 }
 
+table th {
+  padding: 6px 13px;
+  border: 1px solid #dfe2e5;
+}
+table tr {
+  background-color: #fff;
+  border-top: 1px solid #c6cbd1;
+}
+table tr > td {
+  padding: 6px 13px;
+  border: 1px solid #dfe2e5;
+}
+table tr:nth-child(2n) {
+  background-color: #f6f8fa;
+}
+
 #root > .ant-layout {
   min-height: 100vh;
 }
 
 pre {
-  padding: 5px;
-  background-color: rgba(0, 0, 0, 0.08);
-  border-radius: 5px;
+  padding: 16px;
+  overflow: auto;
+  font-size: 85%;
+  line-height: 1.45;
+  background-color: #f6f8fa;
+  border-radius: 6px;
 }
 
 .ant-comment {
@@ -182,6 +201,15 @@ pre {
 
 .popover-no-padding > .ant-popover-content > .ant-popover-inner > .ant-popover-inner-content {
   padding: 0;
+}
+
+.flip-0 {
+  transform: rotate(0deg);
+  transition: all 0.4s;
+}
+.flip-180 {
+  transform: rotate(180deg);
+  transition: all 0.4s;
 }
 
 /* KEYFRAMES*/
